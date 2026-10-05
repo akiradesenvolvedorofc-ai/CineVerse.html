@@ -1,0 +1,6535 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#070b16">
+<title>CineVerse</title>
+
+<style>
+:root{
+    --bg:#070b16;
+    --bg2:#0b1020;
+    --panel:#101729;
+    --panel2:#151d31;
+    --line:rgba(255,255,255,.09);
+    --text:#f7f8ff;
+    --muted:#98a3ba;
+    --accent:#6c7cff;
+    --accent2:#9b5cff;
+    --danger:#ff5573;
+    --success:#45df9a;
+    --radius:20px;
+    --shadow:0 25px 80px rgba(0,0,0,.4);
+}
+
+*{
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    margin:0;
+    color:var(--text);
+    background:
+        radial-gradient(circle at 80% -10%,rgba(108,124,255,.17),transparent 30%),
+        radial-gradient(circle at 15% 10%,rgba(155,92,255,.10),transparent 25%),
+        var(--bg);
+    font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    overflow-x:hidden;
+}
+
+body.player-open{
+    overflow:hidden;
+}
+
+button,
+input,
+textarea,
+select{
+    font:inherit;
+}
+
+button{
+    cursor:pointer;
+}
+
+button:disabled{
+    opacity:.5;
+    cursor:not-allowed;
+}
+
+input,
+textarea,
+select{
+    width:100%;
+    color:white;
+    background:#0c1221;
+    border:1px solid var(--line);
+    border-radius:12px;
+    outline:none;
+    padding:12px 13px;
+}
+
+textarea{
+    min-height:120px;
+    resize:vertical;
+}
+
+input:focus,
+textarea:focus,
+select:focus{
+    border-color:rgba(108,124,255,.7);
+    box-shadow:0 0 0 3px rgba(108,124,255,.09);
+}
+
+button{
+    border:0;
+}
+
+.hidden{
+    display:none!important;
+}
+
+.muted{
+    color:var(--muted);
+}
+
+.container{
+    width:min(1240px,calc(100% - 32px));
+    margin:auto;
+}
+
+/* HEADER */
+
+.topbar{
+    position:sticky;
+    top:0;
+    z-index:100;
+    height:72px;
+    background:rgba(7,11,22,.82);
+    backdrop-filter:blur(22px);
+    border-bottom:1px solid var(--line);
+}
+
+.nav{
+    height:72px;
+    display:flex;
+    align-items:center;
+    gap:20px;
+}
+
+.logo{
+    font-size:21px;
+    font-weight:900;
+    letter-spacing:-1px;
+    white-space:nowrap;
+}
+
+.logo span{
+    color:var(--accent);
+}
+
+.navlinks{
+    display:flex;
+    gap:5px;
+    overflow:auto;
+    scrollbar-width:none;
+}
+
+.navlinks::-webkit-scrollbar{
+    display:none;
+}
+
+.navlinks button{
+    background:transparent;
+    color:#aeb7cb;
+    padding:10px 13px;
+    border-radius:12px;
+    white-space:nowrap;
+}
+
+.navlinks button:hover,
+.navlinks button.active{
+    color:white;
+    background:rgba(255,255,255,.07);
+}
+
+.search{
+    margin-left:auto;
+    width:min(270px,28vw);
+    display:flex;
+    align-items:center;
+    gap:7px;
+    padding:7px 11px;
+    border:1px solid var(--line);
+    background:rgba(255,255,255,.05);
+    border-radius:14px;
+}
+
+.search input{
+    border:0;
+    padding:5px;
+    background:transparent;
+    box-shadow:none;
+}
+
+.admin-open{
+    padding:10px 13px;
+    border-radius:12px;
+    color:white;
+    background:linear-gradient(135deg,rgba(108,124,255,.22),rgba(155,92,255,.18));
+    border:1px solid rgba(108,124,255,.3);
+    white-space:nowrap;
+}
+
+/* HERO */
+
+.hero{
+    min-height:560px;
+    display:flex;
+    align-items:flex-end;
+    position:relative;
+    overflow:hidden;
+}
+
+.hero:before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:
+        linear-gradient(90deg,var(--bg) 0%,rgba(7,11,22,.88) 35%,rgba(7,11,22,.28) 75%,var(--bg) 100%),
+        linear-gradient(0deg,var(--bg) 0%,transparent 65%);
+    z-index:1;
+}
+
+.hero-art{
+    position:absolute;
+    inset:0;
+    background:
+        radial-gradient(circle at 75% 40%,rgba(108,124,255,.32),transparent 20%),
+        radial-gradient(circle at 80% 60%,rgba(155,92,255,.22),transparent 30%),
+        linear-gradient(135deg,#121c42,#090d1a 65%);
+}
+
+.hero-content{
+    position:relative;
+    z-index:2;
+    padding:100px 0 70px;
+    max-width:700px;
+}
+
+.eyebrow{
+    color:#aeb8ff;
+    font-size:12px;
+    font-weight:800;
+    letter-spacing:2px;
+    text-transform:uppercase;
+}
+
+.hero h1{
+    font-size:clamp(42px,7vw,82px);
+    line-height:.95;
+    margin:15px 0;
+    letter-spacing:-4px;
+}
+
+.hero p{
+    max-width:620px;
+    color:#b5bfd2;
+    font-size:17px;
+    line-height:1.65;
+}
+
+.hero-actions{
+    display:flex;
+    gap:10px;
+    margin-top:25px;
+    flex-wrap:wrap;
+}
+
+/* BUTTONS */
+
+.btn{
+    padding:11px 16px;
+    border-radius:12px;
+    background:#1a2238;
+    color:white;
+    border:1px solid var(--line);
+}
+
+.btn:hover{
+    background:#222c47;
+}
+
+.btn.primary{
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    border-color:transparent;
+    box-shadow:0 12px 35px rgba(108,124,255,.22);
+}
+
+.btn.danger{
+    background:rgba(255,85,115,.12);
+    color:#ff8ba0;
+    border-color:rgba(255,85,115,.22);
+}
+
+.btn.success{
+    background:rgba(69,223,154,.1);
+    color:#7cf0b9;
+}
+
+/* SECTIONS */
+
+.section{
+    padding:35px 0;
+}
+
+.section-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:end;
+    gap:20px;
+    margin-bottom:18px;
+}
+
+.section-head h2{
+    margin:4px 0 0;
+    font-size:26px;
+    letter-spacing:-1px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(5,minmax(0,1fr));
+    gap:16px;
+}
+
+/* CARDS */
+
+.card{
+    min-width:0;
+    overflow:hidden;
+    border:1px solid var(--line);
+    border-radius:17px;
+    background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.02));
+    transition:.25s;
+}
+
+.card:hover{
+    transform:translateY(-4px);
+    border-color:rgba(108,124,255,.32);
+    box-shadow:var(--shadow);
+}
+
+.poster{
+    height:270px;
+    position:relative;
+    overflow:hidden;
+    background:
+        linear-gradient(135deg,#1c2851,#111728);
+}
+
+.poster img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+}
+
+.poster-placeholder{
+    width:100%;
+    height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:25px;
+    font-size:22px;
+    font-weight:800;
+    background:
+        radial-gradient(circle at 30% 20%,rgba(108,124,255,.4),transparent 30%),
+        linear-gradient(135deg,#18244d,#111728);
+}
+
+.badge{
+    position:absolute;
+    left:10px;
+    top:10px;
+    padding:6px 8px;
+    border-radius:8px;
+    font-size:10px;
+    font-weight:900;
+    background:rgba(0,0,0,.6);
+    backdrop-filter:blur(10px);
+}
+
+.favorite{
+    position:absolute;
+    right:10px;
+    top:10px;
+    width:35px;
+    height:35px;
+    border-radius:50%;
+    background:rgba(0,0,0,.55);
+    color:white;
+    font-size:18px;
+}
+
+.card-body{
+    padding:13px;
+}
+
+.card-title{
+    font-weight:800;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.meta{
+    color:var(--muted);
+    font-size:12px;
+    margin-top:6px;
+}
+
+.card-actions{
+    display:flex;
+    gap:6px;
+    margin-top:12px;
+}
+
+.small{
+    flex:1;
+    min-width:0;
+    padding:8px;
+    color:white;
+    background:#151d31;
+    border:1px solid var(--line);
+    border-radius:9px;
+    font-size:12px;
+}
+
+/* CHIPS */
+
+.chips{
+    display:flex;
+    gap:8px;
+    overflow:auto;
+    padding-bottom:10px;
+    scrollbar-width:none;
+}
+
+.chips::-webkit-scrollbar{
+    display:none;
+}
+
+.chip{
+    padding:8px 12px;
+    border-radius:999px;
+    white-space:nowrap;
+    color:#aeb7ca;
+    background:#11182a;
+    border:1px solid var(--line);
+}
+
+.chip.active{
+    color:white;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    border-color:transparent;
+}
+
+/* EMPTY */
+
+.empty{
+    grid-column:1/-1;
+    padding:50px 20px;
+    text-align:center;
+    color:var(--muted);
+    border:1px dashed var(--line);
+    border-radius:17px;
+}
+
+/* MODALS */
+
+.modal{
+    position:fixed;
+    inset:0;
+    z-index:500;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:18px;
+    background:rgba(0,0,0,.78);
+    backdrop-filter:blur(10px);
+}
+
+.modal.show{
+    display:flex;
+}
+
+.modal-box{
+    width:min(900px,100%);
+    max-height:92vh;
+    overflow:auto;
+    border:1px solid var(--line);
+    border-radius:22px;
+    background:#0d1424;
+    box-shadow:0 40px 120px rgba(0,0,0,.65);
+}
+
+.modal-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:15px;
+    padding:18px 20px;
+    border-bottom:1px solid var(--line);
+}
+
+.modal-header h2{
+    margin:0;
+}
+
+.close{
+    width:36px;
+    height:36px;
+    border-radius:10px;
+    color:white;
+    background:#171f32;
+    border:1px solid var(--line);
+}
+
+.modal-content{
+    padding:20px;
+}
+
+/* DETAIL */
+
+.detail-cover{
+    width:100%;
+    height:300px;
+    object-fit:cover;
+    border-radius:15px;
+    background:#151d31;
+}
+
+.detail-info h2{
+    font-size:34px;
+    margin:18px 0 7px;
+}
+
+.detail-info p{
+    line-height:1.7;
+    color:#aeb8cb;
+}
+
+.detail-actions{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    margin-top:18px;
+}
+
+/* PLAYER */
+
+.player-modal{
+    padding:0;
+}
+
+.player-box{
+    width:100%;
+    height:100%;
+    max-width:none;
+    max-height:none;
+    border-radius:0;
+    background:#03050a;
+    display:flex;
+    flex-direction:column;
+}
+
+.player-header{
+    height:64px;
+    display:flex;
+    align-items:center;
+    gap:15px;
+    padding:0 16px;
+    background:#080d18;
+    border-bottom:1px solid var(--line);
+}
+
+.player-header h2{
+    margin:0;
+    font-size:16px;
+    flex:1;
+    overflow:hidden;
+    white-space:nowrap;
+    text-overflow:ellipsis;
+}
+
+.player-screen{
+    flex:1;
+    min-height:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#000;
+}
+
+.player-screen iframe,
+.player-screen video{
+    width:100%;
+    height:100%;
+    border:0;
+    object-fit:contain;
+}
+
+.player-controls{
+    min-height:58px;
+    display:flex;
+    align-items:center;
+    gap:7px;
+    padding:10px;
+    background:#080d18;
+    border-top:1px solid var(--line);
+}
+
+.player-controls button,
+.player-controls select{
+    width:auto;
+    padding:9px 11px;
+    background:#151d31;
+    color:white;
+    border:1px solid var(--line);
+    border-radius:9px;
+}
+
+.grow{
+    flex:1;
+}
+
+.youtube-fallback{
+    width:min(650px,90%);
+    text-align:center;
+    padding:35px;
+}
+
+.youtube-fallback h2{
+    margin-top:0;
+}
+
+.youtube-fallback p{
+    color:var(--muted);
+    line-height:1.6;
+}
+
+/* ADMIN */
+
+.admin-modal .modal-box{
+    width:min(1150px,100%);
+}
+
+.admin-layout{
+    display:grid;
+    grid-template-columns:230px 1fr;
+    min-height:650px;
+}
+
+.admin-side{
+    padding:15px;
+    border-right:1px solid var(--line);
+    background:#090f1d;
+}
+
+.admin-side button{
+    width:100%;
+    text-align:left;
+    color:#aeb7ca;
+    padding:11px;
+    margin-bottom:5px;
+    background:transparent;
+    border-radius:10px;
+}
+
+.admin-side button:hover,
+.admin-side button.active{
+    color:white;
+    background:rgba(108,124,255,.12);
+}
+
+.admin-main{
+    padding:20px;
+    overflow:auto;
+}
+
+.admin-title{
+    margin-top:0;
+}
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
+}
+
+.stat{
+    padding:18px;
+    border-radius:15px;
+    background:#11192b;
+    border:1px solid var(--line);
+}
+
+.stat strong{
+    display:block;
+    font-size:28px;
+    margin-top:5px;
+}
+
+.form{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:13px;
+}
+
+.field{
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+}
+
+.field.full{
+    grid-column:1/-1;
+}
+
+.field label{
+    color:#c6cde0;
+    font-size:13px;
+    font-weight:700;
+}
+
+.form-actions{
+    display:flex;
+    justify-content:flex-end;
+    gap:8px;
+    margin-top:18px;
+}
+
+.file-box{
+    padding:14px;
+    border:1px dashed rgba(255,255,255,.15);
+    border-radius:14px;
+    background:rgba(255,255,255,.025);
+}
+
+.file-box strong{
+    display:block;
+    margin-bottom:8px;
+}
+
+.file-box small{
+    display:block;
+    margin-top:8px;
+    color:var(--muted);
+    line-height:1.5;
+}
+
+.file-name{
+    margin-top:8px;
+    color:#8fe8bd;
+    font-size:12px;
+}
+
+.admin-list{
+    display:flex;
+    flex-direction:column;
+    gap:9px;
+    margin-top:15px;
+}
+
+.admin-row{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:13px;
+    border:1px solid var(--line);
+    border-radius:13px;
+    background:#0f1728;
+}
+
+.admin-row-main{
+    flex:1;
+    min-width:0;
+}
+
+.admin-row-title{
+    font-weight:800;
+}
+
+.admin-row-actions{
+    display:flex;
+    gap:6px;
+    flex-wrap:wrap;
+}
+
+.season-box{
+    margin-top:20px;
+    padding:15px;
+    border:1px solid var(--line);
+    border-radius:15px;
+    background:#0b1221;
+}
+
+.episode{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:12px 0;
+    border-bottom:1px solid var(--line);
+}
+
+.episode:last-child{
+    border-bottom:0;
+}
+
+.episode-number{
+    width:38px;
+    height:38px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:10px;
+    background:#151f35;
+    font-weight:800;
+}
+
+.episode-info{
+    flex:1;
+}
+
+.episode-title{
+    font-weight:700;
+}
+
+.login{
+    width:min(430px,100%);
+    padding:30px;
+}
+
+.login h2{
+    margin-top:0;
+}
+
+/* TAB MANAGER */
+
+.tab-system-note{
+    padding:13px;
+    margin-top:10px;
+    border-radius:13px;
+    border:1px solid rgba(108,124,255,.18);
+    background:rgba(108,124,255,.06);
+    color:#aeb8ce;
+    line-height:1.5;
+    font-size:13px;
+}
+
+.tab-select-note{
+    padding:12px;
+    border-radius:12px;
+    border:1px solid rgba(69,223,154,.15);
+    background:rgba(69,223,154,.05);
+    color:#a6eaca;
+    font-size:12px;
+    line-height:1.5;
+}
+
+/* SEARCH */
+
+.search-page{
+    padding:40px 0;
+}
+
+.search-result-title{
+    margin-bottom:20px;
+}
+
+/* TOAST */
+
+.toast{
+    position:fixed;
+    left:50%;
+    bottom:25px;
+    transform:translate(-50%,20px);
+    z-index:1000;
+    opacity:0;
+    pointer-events:none;
+    padding:12px 17px;
+    color:white;
+    background:#151d31;
+    border:1px solid var(--line);
+    border-radius:12px;
+    box-shadow:var(--shadow);
+    transition:.25s;
+}
+
+.toast.show{
+    opacity:1;
+    transform:translate(-50%,0);
+}
+
+/* MOBILE */
+
+@media(max-width:1050px){
+
+    .grid{
+        grid-template-columns:repeat(4,minmax(0,1fr));
+    }
+
+}
+
+@media(max-width:800px){
+
+    .topbar{
+        height:auto;
+    }
+
+    .nav{
+        min-height:65px;
+        height:auto;
+        padding:10px 0;
+        flex-wrap:wrap;
+    }
+
+    .navlinks{
+        order:3;
+        width:100%;
+    }
+
+    .search{
+        width:auto;
+        flex:1;
+    }
+
+    .grid{
+        grid-template-columns:repeat(3,minmax(0,1fr));
+    }
+
+    .poster{
+        height:220px;
+    }
+
+    .admin-layout{
+        grid-template-columns:1fr;
+    }
+
+    .admin-side{
+        border-right:0;
+        border-bottom:1px solid var(--line);
+        display:flex;
+        gap:5px;
+        overflow:auto;
+    }
+
+    .admin-side button{
+        width:auto;
+        white-space:nowrap;
+    }
+
+}
+
+@media(max-width:600px){
+
+    .container{
+        width:min(100% - 20px,1240px);
+    }
+
+    .hero{
+        min-height:540px;
+    }
+
+    .hero-content{
+        padding-bottom:45px;
+    }
+
+    .hero h1{
+        font-size:48px;
+        letter-spacing:-2.5px;
+    }
+
+    .grid{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+        gap:10px;
+    }
+
+    .poster{
+        height:240px;
+    }
+
+    .card-body{
+        padding:10px;
+    }
+
+    .card-actions{
+        flex-direction:column;
+    }
+
+    .form{
+        grid-template-columns:1fr;
+    }
+
+    .field.full{
+        grid-column:auto;
+    }
+
+    .stats{
+        grid-template-columns:1fr;
+    }
+
+    .player-controls{
+        overflow:auto;
+    }
+
+    .player-controls button{
+        flex-shrink:0;
+    }
+
+    .modal{
+        padding:0;
+    }
+
+    .modal-box{
+        height:100%;
+        max-height:100%;
+        border-radius:0;
+    }
+
+}
+
+@media(max-width:380px){
+
+    .poster{
+        height:210px;
+    }
+
+}
+</style>
+</head>
+
+<body>
+
+<header class="topbar">
+
+    <div class="container nav">
+
+        <div class="logo">
+            CINE<span>VERSE</span>
+        </div>
+
+        <nav
+            class="navlinks"
+            id="mainNav"
+        ></nav>
+
+        <div class="search">
+
+            🔎
+
+            <input
+                id="searchInput"
+                placeholder="Buscar..."
+            >
+
+        </div>
+
+        <button
+            class="admin-open"
+            id="adminOpen"
+        >
+            ⚙ Admin
+        </button>
+
+    </div>
+
+</header>
+
+<main>
+
+<section class="hero">
+
+    <div class="hero-art"></div>
+
+    <div class="container hero-content">
+
+        <div class="eyebrow">
+            SEU UNIVERSO DE ENTRETENIMENTO
+        </div>
+
+        <h1 id="heroTitle">
+            CINEVERSE
+        </h1>
+
+        <p id="heroText">
+            Filmes, séries e seus conteúdos favoritos.
+        </p>
+
+        <div class="hero-actions">
+
+            <button
+                class="btn primary"
+                id="heroPlay"
+            >
+                ▶ Explorar
+            </button>
+
+            <button
+                class="btn"
+                id="heroAdmin"
+            >
+                ⚙ Painel
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- INÍCIO -->
+
+<section
+    class="section"
+    id="homeSection"
+>
+
+    <div class="container">
+
+        <div class="section-head">
+
+            <div>
+
+                <div class="eyebrow">
+                    DESTAQUES
+                </div>
+
+                <h2>
+                    Em destaque
+                </h2>
+
+            </div>
+
+        </div>
+
+        <div
+            class="grid"
+            id="featuredGrid"
+        ></div>
+
+    </div>
+
+</section>
+
+
+<!-- ABA DINÂMICA -->
+
+<section
+    class="section hidden"
+    id="tabSection"
+>
+
+    <div class="container">
+
+        <div class="section-head">
+
+            <div>
+
+                <div class="eyebrow">
+                    CATEGORIA
+                </div>
+
+                <h2 id="tabTitle">
+                    Categoria
+                </h2>
+
+            </div>
+
+        </div>
+
+        <div
+            class="grid"
+            id="tabGrid"
+        ></div>
+
+    </div>
+
+</section>
+
+
+<!-- BUSCA -->
+
+<section
+    class="section hidden search-page"
+    id="searchSection"
+>
+
+    <div class="container">
+
+        <div class="eyebrow">
+            PESQUISA
+        </div>
+
+        <h2
+            class="search-result-title"
+            id="searchTitle"
+        >
+            Resultados
+        </h2>
+
+        <div
+            class="grid"
+            id="searchGrid"
+        ></div>
+
+    </div>
+
+</section>
+
+</main>
+
+
+<!-- DETAIL -->
+
+<div
+    class="modal"
+    id="detailModal"
+>
+
+    <div class="modal-box">
+
+        <div class="modal-header">
+
+            <h2>
+                Detalhes
+            </h2>
+
+            <button
+                class="close"
+                data-close="detailModal"
+            >
+                ×
+            </button>
+
+        </div>
+
+        <div class="modal-content">
+
+            <img
+                id="detailCover"
+                class="detail-cover"
+                alt=""
+            >
+
+            <div class="detail-info">
+
+                <h2 id="detailTitle"></h2>
+
+                <div
+                    class="meta"
+                    id="detailMeta"
+                ></div>
+
+                <p
+                    id="detailDescription"
+                ></p>
+
+                <div
+                    class="detail-actions"
+                    id="detailActions"
+                ></div>
+
+            </div>
+
+            <div
+                id="episodesContainer"
+            ></div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- PLAYER -->
+
+<div
+    class="modal player-modal"
+    id="playerModal"
+>
+
+    <div class="player-box">
+
+        <div class="player-header">
+
+            <h2 id="playerTitle">
+                Reproduzindo
+            </h2>
+
+            <button
+                class="close"
+                data-close="playerModal"
+            >
+                ×
+            </button>
+
+        </div>
+
+        <div
+            class="player-screen"
+            id="playerScreen"
+        ></div>
+
+        <div
+            class="player-controls"
+            id="playerControls"
+        ></div>
+
+    </div>
+
+</div>
+
+
+<!-- ADMIN -->
+
+<div
+    class="modal admin-modal"
+    id="adminModal"
+>
+
+    <div class="modal-box">
+
+        <div class="modal-header">
+
+            <h2>
+                CineVerse Admin
+            </h2>
+
+            <button
+                class="close"
+                data-close="adminModal"
+            >
+                ×
+            </button>
+
+        </div>
+
+        <div id="adminRoot"></div>
+
+    </div>
+
+</div>
+
+
+<div
+    class="toast"
+    id="toast"
+></div>
+
+
+<script>
+
+/* =========================================================
+   CONFIG
+   ========================================================= */
+
+const STORAGE_KEY =
+    "cineverse_ultimate_v5";
+
+/* =========================================================
+   BANCO ONLINE — SUPABASE
+
+   Cole aqui a URL e a chave ANON do seu projeto Supabase.
+   A chave ANON pode ficar no HTML; NUNCA coloque a service_role key.
+   ========================================================= */
+const SUPABASE_URL = "https://fimitukltthqqevupkpc.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_JlrHt090IzYWyG_gHnJuAQ_1HkzEoep";
+const SUPABASE_STATE_ID = 1;
+const SUPABASE_BUCKET = "cineverse-videos";
+const REMOTE_SYNC_INTERVAL = 5000;
+
+
+/* =========================================================
+   ESTADO PADRÃO
+   ========================================================= */
+
+const DEFAULT_STATE = {
+
+    settings:{
+        name:"CineVerse",
+        tag:"Seu universo de entretenimento.",
+        accent:"#6c7cff",
+        accent2:"#9b5cff",
+        bg:"#070b16",
+        panel:"#101729"
+    },
+
+    tabs:[
+        {
+            id:"home",
+            name:"Início",
+            type:"home"
+        },
+
+        {
+            id:"movies",
+            name:"Filmes",
+            type:"normal"
+        },
+
+        {
+            id:"series",
+            name:"Séries",
+            type:"normal"
+        },
+
+        {
+            id:"favorites",
+            name:"Minha lista",
+            type:"favorites"
+        },
+
+        {
+            id:"minecraft",
+            name:"Minecraft",
+            type:"normal"
+        }
+    ],
+
+    items:[
+
+        {
+            id:"demo_movie",
+            type:"movie",
+            title:"Exemplo de Filme",
+            year:"2026",
+            rating:"9.1",
+            genre:"Ação",
+
+            tabId:"movies",
+
+            description:
+                "Exemplo de conteúdo. Você pode editar ou apagar pelo painel administrativo.",
+
+            cover:"",
+
+            sourceType:"youtube",
+
+            source:
+                "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+        },
+
+        {
+            id:"demo_series",
+            type:"series",
+            title:"Exemplo de Série",
+            year:"2026",
+            rating:"9.3",
+            genre:"Drama",
+
+            tabId:"series",
+
+            description:
+                "Exemplo de série com temporadas e episódios.",
+
+            cover:"",
+
+            sourceType:"youtube",
+
+            source:"",
+
+            seasons:[
+                {
+                    number:1,
+
+                    episodes:[
+                        {
+                            id:"demo_ep_1",
+                            number:1,
+                            title:"O começo",
+                            duration:"42 min",
+                            sourceType:"youtube",
+                            source:
+                                "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+                        },
+
+                        {
+                            id:"demo_ep_2",
+                            number:2,
+                            title:"A descoberta",
+                            duration:"39 min",
+                            sourceType:"youtube",
+                            source:
+                                "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+                        }
+                    ]
+                }
+            ]
+        }
+
+    ]
+
+};
+
+
+let STATE =
+    loadState();
+
+let currentPage =
+    "home";
+
+let currentGenre =
+    "Todos";
+
+let adminLogged =
+    false;
+
+let editingId =
+    null;
+
+let temporaryFiles =
+    new Map();
+
+let currentPlayerUrl =
+    null;
+
+
+/* =========================================================
+   STORAGE
+   ========================================================= */
+
+function clone(value){
+
+    return JSON.parse(
+        JSON.stringify(value)
+    );
+
+}
+
+function loadState(){
+
+    try{
+
+        const saved =
+            JSON.parse(
+                localStorage.getItem(
+                    STORAGE_KEY
+                )
+            );
+
+        if(
+            saved &&
+            Array.isArray(saved.items) &&
+            Array.isArray(saved.tabs)
+        ){
+
+            normalizeState(
+                saved
+            );
+
+            return saved;
+
+        }
+
+    }catch(error){
+
+        console.warn(
+            "Erro ao carregar estado:",
+            error
+        );
+
+    }
+
+    const fresh =
+        clone(
+            DEFAULT_STATE
+        );
+
+    normalizeState(
+        fresh
+    );
+
+    return fresh;
+
+}
+
+
+/*
+    Essa função é importante:
+
+    Conteúdo antigo que não possuía tabId
+    passa a ter uma aba correta.
+*/
+
+function normalizeState(state){
+
+    if(!state.settings){
+
+        state.settings =
+            clone(
+                DEFAULT_STATE.settings
+            );
+
+    }
+
+    if(!Array.isArray(state.tabs)){
+
+        state.tabs =
+            clone(
+                DEFAULT_STATE.tabs
+            );
+
+    }
+
+    if(!Array.isArray(state.items)){
+
+        state.items = [];
+
+    }
+
+    state.items.forEach(
+        item=>{
+
+            if(!item.tabId){
+
+                if(item.type==="movie"){
+
+                    item.tabId =
+                        findTabIdByName(
+                            state,
+                            "Filmes"
+                        ) ||
+                        "movies";
+
+                }else{
+
+                    item.tabId =
+                        findTabIdByName(
+                            state,
+                            "Séries"
+                        ) ||
+                        "series";
+
+                }
+
+            }
+
+            if(
+                item.type==="series" &&
+                !Array.isArray(item.seasons)
+            ){
+
+                item.seasons=[];
+
+            }
+
+        }
+    );
+
+}
+
+function findTabIdByName(
+    state,
+    name
+){
+
+    const tab =
+        state.tabs.find(
+            x =>
+                x.name
+                    .toLowerCase()
+                    ===
+                name.toLowerCase()
+        );
+
+    return tab
+        ? tab.id
+        : null;
+
+}
+
+function isCloudConfigured(){
+    return SUPABASE_URL.startsWith("https://") &&
+           !SUPABASE_URL.includes("COLE_AQUI") &&
+           SUPABASE_ANON_KEY &&
+           !SUPABASE_ANON_KEY.includes("COLE_AQUI");
+}
+
+function saveLocalState(){
+    localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(STATE)
+    );
+}
+
+let remoteSaveTimer = null;
+let remoteSyncBusy = false;
+
+function saveState(){
+    saveLocalState();
+
+    if(!isCloudConfigured()){
+        return Promise.resolve(false);
+    }
+
+    clearTimeout(remoteSaveTimer);
+
+    remoteSaveTimer = setTimeout(
+        ()=>{
+            saveRemoteState();
+        },
+        150
+    );
+
+    return Promise.resolve(true);
+}
+
+async function saveRemoteState(){
+    if(!isCloudConfigured() || remoteSyncBusy)return false;
+
+    remoteSyncBusy = true;
+
+    try{
+        const response = await fetch(
+            `${SUPABASE_URL}/rest/v1/cineverse_state`,
+            {
+                method:"POST",
+                headers:{
+                    "apikey":SUPABASE_ANON_KEY,
+                    "Authorization":`Bearer ${SUPABASE_ANON_KEY}`,
+                    "Content-Type":"application/json",
+                    "Prefer":"resolution=merge-duplicates,return=minimal"
+                },
+                body:JSON.stringify({
+                    id:SUPABASE_STATE_ID,
+                    state:STATE,
+                    updated_at:new Date().toISOString()
+                })
+            }
+        );
+
+        if(!response.ok){
+            throw new Error(await response.text());
+        }
+
+        return true;
+    }catch(error){
+        console.warn("Falha ao sincronizar CineVerse:",error);
+        return false;
+    }finally{
+        remoteSyncBusy = false;
+    }
+}
+
+async function loadRemoteState(){
+    if(!isCloudConfigured())return null;
+
+    try{
+        const response = await fetch(
+            `${SUPABASE_URL}/rest/v1/cineverse_state?id=eq.${SUPABASE_STATE_ID}&select=state`,
+            {
+                headers:{
+                    "apikey":SUPABASE_ANON_KEY,
+                    "Authorization":`Bearer ${SUPABASE_ANON_KEY}`
+                },
+                cache:"no-store"
+            }
+        );
+
+        if(!response.ok){
+            throw new Error(await response.text());
+        }
+
+        const rows = await response.json();
+        return rows?.[0]?.state || null;
+    }catch(error){
+        console.warn("Falha ao carregar CineVerse online:",error);
+        return null;
+    }
+}
+
+async function bootstrapCloud(){
+    if(!isCloudConfigured()){
+        return;
+    }
+
+    const remote = await loadRemoteState();
+
+    if(remote && Array.isArray(remote.items) && Array.isArray(remote.tabs)){
+        STATE = remote;
+        normalizeState(STATE);
+        saveLocalState();
+        render();
+        toast("Catálogo sincronizado com a nuvem.");
+    }else{
+        await saveRemoteState();
+    }
+
+    setInterval(async()=>{
+        const adminOpen = document.getElementById("adminModal")?.classList.contains("show");
+        if(adminOpen || remoteSyncBusy)return;
+
+        const latest = await loadRemoteState();
+
+        if(latest && Array.isArray(latest.items) && Array.isArray(latest.tabs)){
+            const before = JSON.stringify(STATE);
+            const after = JSON.stringify(latest);
+
+            if(before!==after){
+                STATE = latest;
+                normalizeState(STATE);
+                saveLocalState();
+                render();
+            }
+        }
+    },REMOTE_SYNC_INTERVAL);
+}
+
+/* =========================================================
+   UPLOAD DE VÍDEOS GRANDES — SUPABASE STORAGE / TUS
+   ========================================================= */
+
+async function uploadVideoToCloud(file,onProgress=()=>{}){
+    if(!isCloudConfigured()){
+        throw new Error("Supabase não configurado.");
+    }
+
+    if(!file)return null;
+
+    const cleanName = file.name
+        .replace(/[^a-zA-Z0-9._-]+/g,"-")
+        .replace(/-+/g,"-");
+
+    const objectName = `${Date.now()}-${Math.random().toString(36).slice(2,10)}-${cleanName}`;
+
+    /*
+       TUS é usado para não tentar colocar um vídeo de vários GB
+       dentro do localStorage/IndexedDB e permite upload em partes.
+    */
+    const endpoint = `${SUPABASE_URL.replace(/\.supabase\.co$/,".storage.supabase.co")}/storage/v1/upload/resumable`;
+
+    const metadata = [
+        `bucketName ${btoa(SUPABASE_BUCKET)}`,
+        `objectName ${btoa(objectName)}`,
+        `contentType ${btoa(file.type || "video/mp4")}`
+    ].join(",");
+
+    const create = await fetch(endpoint,{
+        method:"POST",
+        headers:{
+            "Authorization":`Bearer ${SUPABASE_ANON_KEY}`,
+            "apikey":SUPABASE_ANON_KEY,
+            "x-upsert":"true",
+            "Upload-Length":String(file.size),
+            "Upload-Metadata":metadata,
+            "Tus-Resumable":"1.0.0"
+        }
+    });
+
+    if(!create.ok){
+        const msg=await create.text();
+        throw new Error(msg || "Não foi possível iniciar o upload.");
+    }
+
+    let uploadUrl=create.headers.get("Location");
+
+    if(uploadUrl && uploadUrl.startsWith("/")){
+        uploadUrl = new URL(uploadUrl,endpoint).href;
+    }
+
+    if(!uploadUrl){
+        throw new Error("O servidor não retornou a URL do upload.");
+    }
+
+    const chunkSize = 8 * 1024 * 1024;
+    let offset = 0;
+
+    while(offset < file.size){
+        const end = Math.min(offset + chunkSize,file.size);
+        const chunk = file.slice(offset,end);
+
+        const patch = await fetch(uploadUrl,{
+            method:"PATCH",
+            headers:{
+                "Authorization":`Bearer ${SUPABASE_ANON_KEY}`,
+                "apikey":SUPABASE_ANON_KEY,
+                "Content-Type":"application/offset+octet-stream",
+                "Tus-Resumable":"1.0.0",
+                "Upload-Offset":String(offset)
+            },
+            body:chunk
+        });
+
+        if(!patch.ok){
+            throw new Error(await patch.text());
+        }
+
+        const returnedOffset = Number(patch.headers.get("Upload-Offset"));
+        offset = Number.isFinite(returnedOffset) ? returnedOffset : end;
+        onProgress(Math.round((offset/file.size)*100));
+    }
+
+    return `${SUPABASE_URL}/storage/v1/object/public/${SUPABASE_BUCKET}/${encodeURIComponent(objectName)}`;
+}
+
+async function ensureCloudStateExists(){
+    if(!isCloudConfigured())return;
+
+    const current=await loadRemoteState();
+    if(!current){
+        await saveRemoteState();
+    }
+}
+
+
+/* =========================================================
+   HELPERS
+   ========================================================= */
+
+function uid(prefix="id"){
+
+    return (
+        prefix +
+        "_" +
+        Date.now().toString(36) +
+        "_" +
+        Math.random()
+            .toString(36)
+            .slice(2,9)
+    );
+
+}
+
+function escapeHTML(value=""){
+
+    return String(value)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+
+}
+
+function getItem(id){
+
+    return STATE.items.find(
+        x=>x.id===id
+    );
+
+}
+
+function getTab(id){
+
+    return STATE.tabs.find(
+        x=>x.id===id
+    );
+
+}
+
+function toast(message){
+
+    const element =
+        document.getElementById(
+            "toast"
+        );
+
+    element.textContent =
+        message;
+
+    element.classList.add(
+        "show"
+    );
+
+    clearTimeout(
+        window.__toastTimer
+    );
+
+    window.__toastTimer =
+        setTimeout(
+            ()=>{
+                element.classList.remove(
+                    "show"
+                );
+            },
+            2800
+        );
+
+}
+
+function openModal(id){
+
+    document
+        .getElementById(id)
+        .classList.add(
+            "show"
+        );
+
+}
+
+function closeModal(id){
+
+    document
+        .getElementById(id)
+        .classList.remove(
+            "show"
+        );
+
+}
+
+
+/* =========================================================
+   FAVORITOS
+   ========================================================= */
+
+function getFavorites(){
+
+    try{
+
+        return JSON.parse(
+            localStorage.getItem(
+                "cineverse_favorites"
+            ) || "[]"
+        );
+
+    }catch{
+
+        return [];
+
+    }
+
+}
+
+function saveFavorites(list){
+
+    localStorage.setItem(
+        "cineverse_favorites",
+        JSON.stringify(list)
+    );
+
+}
+
+function isFavorite(id){
+
+    return getFavorites()
+        .includes(id);
+
+}
+
+function toggleFavorite(id){
+
+    let list =
+        getFavorites();
+
+    if(
+        list.includes(id)
+    ){
+
+        list =
+            list.filter(
+                x=>x!==id
+            );
+
+        toast(
+            "Removido da sua lista."
+        );
+
+    }else{
+
+        list.push(id);
+
+        toast(
+            "Adicionado à sua lista."
+        );
+
+    }
+
+    saveFavorites(
+        list
+    );
+
+    renderCurrentPage();
+
+}
+
+
+/* =========================================================
+   TEMA
+   ========================================================= */
+
+function applyTheme(){
+
+    document.documentElement
+        .style
+        .setProperty(
+            "--accent",
+            STATE.settings.accent
+        );
+
+    document.documentElement
+        .style
+        .setProperty(
+            "--accent2",
+            STATE.settings.accent2
+        );
+
+    document.documentElement
+        .style
+        .setProperty(
+            "--bg",
+            STATE.settings.bg
+        );
+
+    document.documentElement
+        .style
+        .setProperty(
+            "--panel",
+            STATE.settings.panel
+        );
+
+    document.title =
+        STATE.settings.name;
+
+    document.getElementById(
+        "heroTitle"
+    ).textContent =
+        STATE.settings.name
+            .toUpperCase();
+
+    document.getElementById(
+        "heroText"
+    ).textContent =
+        STATE.settings.tag;
+
+}
+
+
+/* =========================================================
+   YOUTUBE
+   ========================================================= */
+
+function youtubeId(url){
+
+    try{
+
+        const parsed =
+            new URL(
+                String(url)
+                    .trim()
+            );
+
+        const host =
+            parsed.hostname
+                .replace(
+                    /^www\./,
+                    ""
+                )
+                .toLowerCase();
+
+        if(
+            host==="youtu.be"
+        ){
+
+            return (
+                parsed.pathname
+                    .split("/")
+                    .filter(Boolean)[0]
+                || ""
+            );
+
+        }
+
+        if(
+            host==="youtube.com" ||
+            host==="m.youtube.com"
+        ){
+
+            if(
+                parsed.pathname ===
+                "/watch"
+            ){
+
+                return (
+                    parsed.searchParams
+                        .get("v")
+                    || ""
+                );
+
+            }
+
+            const parts =
+                parsed.pathname
+                    .split("/")
+                    .filter(Boolean);
+
+            if(
+                parts[0]==="shorts" ||
+                parts[0]==="embed" ||
+                parts[0]==="live"
+            ){
+
+                return (
+                    parts[1] ||
+                    ""
+                );
+
+            }
+
+        }
+
+        return (
+            parsed.searchParams
+                .get("v")
+            || ""
+        );
+
+    }catch{
+
+        return "";
+
+    }
+
+}
+
+
+/* =========================================================
+   ARQUIVOS LOCAIS
+   ========================================================= */
+
+function registerLocalFile(file){
+
+    const id =
+        uid("local");
+
+    temporaryFiles.set(
+        id,
+        file
+    );
+
+    return id;
+
+}
+
+function getLocalFile(id){
+
+    return temporaryFiles.get(
+        id
+    );
+
+}
+
+function formatSize(bytes){
+
+    if(
+        bytes <
+        1024 * 1024
+    ){
+
+        return (
+            bytes / 1024
+        ).toFixed(1) +
+        " KB";
+
+    }
+
+    if(
+        bytes <
+        1024 * 1024 * 1024
+    ){
+
+        return (
+            bytes /
+            1024 /
+            1024
+        ).toFixed(1) +
+        " MB";
+
+    }
+
+    return (
+        bytes /
+        1024 /
+        1024 /
+        1024
+    ).toFixed(2) +
+    " GB";
+
+}
+
+
+/* =========================================================
+   POSTER
+   ========================================================= */
+
+function posterHTML(item){
+
+    if(item.cover){
+
+        return `
+            <img
+                src="${escapeHTML(item.cover)}"
+                alt="${escapeHTML(item.title)}"
+                loading="lazy"
+            >
+        `;
+
+    }
+
+    return `
+        <div class="poster-placeholder">
+            ${escapeHTML(item.title)}
+        </div>
+    `;
+
+}
+
+
+/* =========================================================
+   CARD
+   ========================================================= */
+
+function cardHTML(item){
+
+    const type =
+        item.type==="series"
+            ? "SÉRIE"
+            : "FILME";
+
+    return `
+
+        <article class="card">
+
+            <div class="poster">
+
+                ${posterHTML(item)}
+
+                <span class="badge">
+                    ${type}
+                </span>
+
+                <button
+                    class="favorite"
+                    data-action="favorite"
+                    data-id="${item.id}"
+                >
+                    ${
+                        isFavorite(item.id)
+                            ? "♥"
+                            : "♡"
+                    }
+                </button>
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="card-title">
+                    ${escapeHTML(item.title)}
+                </div>
+
+                <div class="meta">
+                    ${escapeHTML(item.year || "—")}
+                    ·
+                    ★ ${escapeHTML(item.rating || "—")}
+                </div>
+
+                <div class="card-actions">
+
+                    <button
+                        class="small"
+                        data-action="details"
+                        data-id="${item.id}"
+                    >
+                        Detalhes
+                    </button>
+
+                    <button
+                        class="small"
+                        data-action="play"
+                        data-id="${item.id}"
+                    >
+                        ▶ Assistir
+                    </button>
+
+                </div>
+
+            </div>
+
+        </article>
+    `;
+
+}
+
+function renderGrid(
+    element,
+    items
+){
+
+    if(!items.length){
+
+        element.innerHTML = `
+            <div class="empty">
+                Nenhum conteúdo nesta aba.
+            </div>
+        `;
+
+        return;
+
+    }
+
+    element.innerHTML =
+        items
+            .map(cardHTML)
+            .join("");
+
+}
+
+
+/* =========================================================
+   NAVEGAÇÃO
+   ========================================================= */
+
+function renderNavigation(){
+
+    const nav =
+        document.getElementById(
+            "mainNav"
+        );
+
+    nav.innerHTML =
+        STATE.tabs
+            .map(
+                tab=>`
+
+                    <button
+                        data-page="${escapeHTML(tab.id)}"
+                        class="${
+                            currentPage===tab.id
+                                ? "active"
+                                : ""
+                        }"
+                    >
+                        ${escapeHTML(tab.name)}
+                    </button>
+
+                `
+            )
+            .join("");
+
+}
+
+
+/*
+    AGORA CADA ABA REALMENTE FILTRA
+    PELO tabId DO CONTEÚDO.
+*/
+
+function itemsForTab(tabId){
+
+    const tab =
+        getTab(tabId);
+
+    if(!tab){
+
+        return [];
+
+    }
+
+    if(
+        tab.type==="favorites"
+    ){
+
+        const favorites =
+            getFavorites();
+
+        return STATE.items.filter(
+            item =>
+                favorites.includes(
+                    item.id
+                )
+        );
+
+    }
+
+    if(
+        tab.type==="home"
+    ){
+
+        return STATE.items.slice(
+            0,
+            8
+        );
+
+    }
+
+    return STATE.items.filter(
+        item =>
+            item.tabId === tabId
+    );
+
+}
+
+
+/* =========================================================
+   MOSTRAR ABA
+   ========================================================= */
+
+function showTab(tabId){
+
+    currentPage =
+        tabId;
+
+    const tab =
+        getTab(tabId);
+
+    if(!tab)return;
+
+    document.getElementById(
+        "homeSection"
+    ).classList.add(
+        "hidden"
+    );
+
+    document.getElementById(
+        "tabSection"
+    ).classList.add(
+        "hidden"
+    );
+
+    document.getElementById(
+        "searchSection"
+    ).classList.add(
+        "hidden"
+    );
+
+    document.getElementById(
+        "tabTitle"
+    ).textContent =
+        tab.name;
+
+    const grid =
+        document.getElementById(
+            "tabGrid"
+        );
+
+    let items =
+        itemsForTab(
+            tabId
+        );
+
+    /*
+        Filtro de gênero só é aplicado
+        quando estiver na aba Filmes.
+    */
+
+    if(
+        tab.name
+            .toLowerCase()
+            ===
+        "filmes"
+        &&
+        currentGenre!=="Todos"
+    ){
+
+        items =
+            items.filter(
+                item =>
+                    item.genre ===
+                    currentGenre
+            );
+
+    }
+
+    renderGrid(
+        grid,
+        items
+    );
+
+    if(
+        tab.type==="home"
+    ){
+
+        document.getElementById(
+            "homeSection"
+        ).classList.remove(
+            "hidden"
+        );
+
+        renderGrid(
+            document.getElementById(
+                "featuredGrid"
+            ),
+            items
+        );
+
+    }else{
+
+        document.getElementById(
+            "tabSection"
+        ).classList.remove(
+            "hidden"
+        );
+
+    }
+
+    renderNavigation();
+
+    window.scrollTo({
+        top:
+            tab.type==="home"
+                ? 0
+                : 500,
+        behavior:"smooth"
+    });
+
+}
+
+
+/* =========================================================
+   RENDER CURRENT PAGE
+   ========================================================= */
+
+function renderCurrentPage(){
+
+    renderNavigation();
+
+    if(
+        currentPage==="home"
+    ){
+
+        showTab(
+            "home"
+        );
+
+        return;
+
+    }
+
+    showTab(
+        currentPage
+    );
+
+}
+
+
+/* =========================================================
+   GÊNEROS
+   ========================================================= */
+
+function renderGenres(){
+
+    /*
+        Os gêneros agora são mostrados
+        somente quando o usuário estiver
+        na aba Filmes.
+    */
+
+    let existing =
+        document.getElementById(
+            "genreArea"
+        );
+
+    if(existing){
+        existing.remove();
+    }
+
+}
+
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
+
+function search(value){
+
+    const query =
+        value
+            .trim()
+            .toLowerCase();
+
+    if(!query){
+
+        renderCurrentPage();
+
+        return;
+
+    }
+
+    document.getElementById(
+        "homeSection"
+    ).classList.add(
+        "hidden"
+    );
+
+    document.getElementById(
+        "tabSection"
+    ).classList.add(
+        "hidden"
+    );
+
+    document.getElementById(
+        "searchSection"
+    ).classList.remove(
+        "hidden"
+    );
+
+    const results =
+        STATE.items.filter(
+            item =>
+
+                item.title
+                    .toLowerCase()
+                    .includes(query)
+
+                ||
+
+                String(
+                    item.genre || ""
+                )
+                    .toLowerCase()
+                    .includes(query)
+
+                ||
+
+                String(
+                    item.description || ""
+                )
+                    .toLowerCase()
+                    .includes(query)
+
+        );
+
+    document.getElementById(
+        "searchTitle"
+    ).textContent =
+        `Resultados para "${value}"`;
+
+    renderGrid(
+        document.getElementById(
+            "searchGrid"
+        ),
+        results
+    );
+
+}
+
+
+/* =========================================================
+   DETALHES
+   ========================================================= */
+
+function showDetails(id){
+
+    const item =
+        getItem(id);
+
+    if(!item)return;
+
+    document.getElementById(
+        "detailTitle"
+    ).textContent =
+        item.title;
+
+    document.getElementById(
+        "detailMeta"
+    ).textContent =
+        `${item.year || "—"} · ${item.genre || "Sem gênero"} · ★ ${item.rating || "—"}`;
+
+    document.getElementById(
+        "detailDescription"
+    ).textContent =
+        item.description ||
+        "Sem descrição.";
+
+    const cover =
+        document.getElementById(
+            "detailCover"
+        );
+
+    if(item.cover){
+
+        cover.src =
+            item.cover;
+
+        cover.classList.remove(
+            "hidden"
+        );
+
+    }else{
+
+        cover.removeAttribute(
+            "src"
+        );
+
+        cover.classList.add(
+            "hidden"
+        );
+
+    }
+
+    const actions =
+        document.getElementById(
+            "detailActions"
+        );
+
+    actions.innerHTML = `
+
+        ${
+            item.type==="movie"
+                ?
+
+                `
+                    <button
+                        class="btn primary"
+                        data-detail-play="${item.id}"
+                    >
+                        ▶ Assistir agora
+                    </button>
+                `
+
+                :
+
+                ""
+        }
+
+        <button
+            class="btn"
+            data-detail-fav="${item.id}"
+        >
+            ${
+                isFavorite(item.id)
+                    ? "♥ Remover da lista"
+                    : "♡ Adicionar à lista"
+            }
+        </button>
+
+    `;
+
+    if(
+        item.type==="series"
+    ){
+
+        renderEpisodes(
+            item
+        );
+
+    }else{
+
+        document.getElementById(
+            "episodesContainer"
+        ).innerHTML = "";
+
+    }
+
+    openModal(
+        "detailModal"
+    );
+
+}
+
+
+/* =========================================================
+   EPISÓDIOS
+   ========================================================= */
+
+function renderEpisodes(
+    series
+){
+
+    const container =
+        document.getElementById(
+            "episodesContainer"
+        );
+
+    if(
+        !Array.isArray(
+            series.seasons
+        ) ||
+        !series.seasons.length
+    ){
+
+        container.innerHTML = `
+            <div class="empty">
+                Nenhum episódio cadastrado.
+            </div>
+        `;
+
+        return;
+
+    }
+
+    container.innerHTML =
+        series.seasons
+            .map(
+                season=>`
+
+                    <div class="season-box">
+
+                        <h3>
+                            Temporada ${season.number}
+                        </h3>
+
+                        ${
+                            season.episodes.length
+
+                            ?
+
+                            season.episodes
+                                .map(
+                                    episode=>`
+
+                                        <div class="episode">
+
+                                            <div class="episode-number">
+                                                ${episode.number}
+                                            </div>
+
+                                            <div class="episode-info">
+
+                                                <div class="episode-title">
+                                                    ${escapeHTML(episode.title)}
+                                                </div>
+
+                                                <div class="meta">
+                                                    ${escapeHTML(episode.duration || "")}
+                                                </div>
+
+                                            </div>
+
+                                            <button
+                                                class="btn primary"
+                                                data-episode-play="${series.id}"
+                                                data-season="${season.number}"
+                                                data-episode="${episode.id}"
+                                            >
+                                                ▶
+                                            </button>
+
+                                        </div>
+
+                                    `
+                                )
+                                .join("")
+
+                            :
+
+                            `<div class="muted">
+                                Nenhum episódio.
+                            </div>`
+
+                        }
+
+                    </div>
+
+                `
+            )
+            .join("");
+
+}
+
+
+/* =========================================================
+   FULLSCREEN + PAISAGEM
+   ========================================================= */
+
+async function enterCinemaMode(){
+
+    const player =
+        document.getElementById(
+            "playerModal"
+        );
+
+    try{
+
+        if(
+            player.requestFullscreen &&
+            !document.fullscreenElement
+        ){
+
+            await player.requestFullscreen();
+
+        }
+
+    }catch(error){
+
+        console.log(
+            "Fullscreen não permitido:",
+            error
+        );
+
+    }
+
+    /*
+        A Orientation API normalmente funciona
+        quando o documento está em fullscreen.
+    */
+
+    try{
+
+        if(
+            screen.orientation &&
+            screen.orientation.lock
+        ){
+
+            await screen.orientation.lock(
+                "landscape"
+            );
+
+        }
+
+    }catch(error){
+
+        console.log(
+            "Rotação automática não disponível:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   SAIR DO MODO CINEMA
+   ========================================================= */
+
+async function exitCinemaMode(){
+
+    try{
+
+        if(
+            document.fullscreenElement
+        ){
+
+            await document.exitFullscreen();
+
+        }
+
+    }catch{}
+
+    try{
+
+        if(
+            screen.orientation &&
+            screen.orientation.unlock
+        ){
+
+            screen.orientation.unlock();
+
+        }
+
+    }catch{}
+
+}
+
+
+/* =========================================================
+   PLAYER
+   ========================================================= */
+
+async function playItem(
+    item
+){
+
+    if(!item)return;
+
+    if(
+        item.type==="series"
+    ){
+
+        showDetails(
+            item.id
+        );
+
+        return;
+
+    }
+
+    closeModal(
+        "detailModal"
+    );
+
+    await openPlayer(
+        item.title,
+        item.sourceType,
+        item.source
+    );
+
+}
+
+async function playEpisode(
+    seriesId,
+    seasonNumber,
+    episodeId
+){
+
+    const series =
+        getItem(
+            seriesId
+        );
+
+    if(!series)return;
+
+    const season =
+        series.seasons.find(
+            x =>
+                x.number ===
+                Number(
+                    seasonNumber
+                )
+        );
+
+    if(!season)return;
+
+    const episode =
+        season.episodes.find(
+            x =>
+                x.id ===
+                episodeId
+        );
+
+    if(!episode)return;
+
+    closeModal(
+        "detailModal"
+    );
+
+    await openPlayer(
+        `${series.title} — ${episode.title}`,
+        episode.sourceType,
+        episode.source
+    );
+
+}
+
+
+/* =========================================================
+   ABRIR PLAYER
+   ========================================================= */
+
+async function openPlayer(
+    title,
+    type,
+    source
+){
+
+    if(currentPlayerUrl){
+
+        try{
+
+            URL.revokeObjectURL(
+                currentPlayerUrl
+            );
+
+        }catch{}
+
+        currentPlayerUrl =
+            null;
+
+    }
+
+    const screen =
+        document.getElementById(
+            "playerScreen"
+        );
+
+    const controls =
+        document.getElementById(
+            "playerControls"
+        );
+
+    document.getElementById(
+        "playerTitle"
+    ).textContent =
+        title;
+
+    screen.innerHTML = "";
+
+    controls.innerHTML = "";
+
+    document.body.classList.add(
+        "player-open"
+    );
+
+    /*
+        Abrimos o modal antes do fullscreen.
+    */
+
+    openModal(
+        "playerModal"
+    );
+
+
+    /* ===============================
+       YOUTUBE
+       =============================== */
+
+    if(
+        type==="youtube"
+    ){
+
+        const id =
+            youtubeId(
+                source
+            );
+
+        if(!id){
+
+            screen.innerHTML = `
+
+                <div class="youtube-fallback">
+
+                    <h2>
+                        Link do YouTube inválido
+                    </h2>
+
+                    <p>
+                        Use um link como
+                        youtube.com/watch?v=...
+                        ou youtu.be/...
+                    </p>
+
+                    <button
+                        class="btn"
+                        id="externalYoutube"
+                    >
+                        Abrir link
+                    </button>
+
+                </div>
+
+            `;
+
+            document.getElementById(
+                "externalYoutube"
+            ).onclick =
+                ()=>{
+                    if(source){
+
+                        window.open(
+                            source,
+                            "_blank",
+                            "noopener"
+                        );
+
+                    }
+                };
+
+            /*
+                Mesmo no YouTube tentamos
+                entrar no modo cinema.
+            */
+
+            setTimeout(
+                enterCinemaMode,
+                100
+            );
+
+            return;
+
+        }
+
+        screen.innerHTML = `
+
+            <iframe
+                title="${escapeHTML(title)}"
+                src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(id)}?rel=0&playsinline=1&autoplay=1"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+                referrerpolicy="strict-origin-when-cross-origin"
+                allowfullscreen
+            ></iframe>
+
+        `;
+
+        controls.innerHTML = `
+
+            <span class="muted">
+                Player oficial do YouTube
+            </span>
+
+            <span class="grow"></span>
+
+            <button
+                id="externalYoutube"
+            >
+                Abrir no YouTube ↗
+            </button>
+
+        `;
+
+        document.getElementById(
+            "externalYoutube"
+        ).onclick =
+            ()=>{
+                window.open(
+                    source,
+                    "_blank",
+                    "noopener"
+                );
+            };
+
+        /*
+            O primeiro clique no botão Assistir
+            ainda é considerado uma interação do usuário.
+        */
+
+        setTimeout(
+            enterCinemaMode,
+            80
+        );
+
+        return;
+
+    }
+
+
+    /* ===============================
+       ARQUIVO LOCAL
+       =============================== */
+
+    if(
+        type==="local"
+    ){
+
+        const file =
+            getLocalFile(
+                source
+            );
+
+        if(!file){
+
+            screen.innerHTML = `
+
+                <div class="youtube-fallback">
+
+                    <h2>
+                        Arquivo não disponível
+                    </h2>
+
+                    <p>
+                        O arquivo foi selecionado em
+                        outra sessão ou a página foi
+                        recarregada. Selecione o arquivo
+                        novamente pelo painel Admin.
+                    </p>
+
+                </div>
+
+            `;
+
+            return;
+
+        }
+
+        currentPlayerUrl =
+            URL.createObjectURL(
+                file
+            );
+
+        screen.innerHTML = `
+
+            <video
+                id="mainVideo"
+                playsinline
+                controls
+                autoplay
+                preload="metadata"
+                src="${escapeHTML(currentPlayerUrl)}"
+            ></video>
+
+        `;
+
+        createVideoControls();
+
+        const video =
+            document.getElementById(
+                "mainVideo"
+            );
+
+        video.addEventListener(
+            "error",
+            ()=>{
+                toast(
+                    "O navegador não conseguiu reproduzir esse formato."
+                );
+            }
+        );
+
+        video.addEventListener(
+            "loadedmetadata",
+            ()=>{
+                /*
+                    Tentamos iniciar automaticamente.
+                */
+
+                video.play()
+                    .catch(
+                        ()=>{
+                            /*
+                                Alguns navegadores bloqueiam
+                                autoplay.
+                            */
+                        }
+                    );
+            }
+        );
+
+        /*
+            Entrar em fullscreen imediatamente.
+        */
+
+        setTimeout(
+            enterCinemaMode,
+            80
+        );
+
+        return;
+
+    }
+
+
+    /* ===============================
+       URL DIRETA
+       =============================== */
+
+    if(
+        type==="direct" ||
+        type==="supabase"
+    ){
+
+        if(!source){
+
+            toast(
+                "Nenhuma URL foi adicionada."
+            );
+
+            return;
+
+        }
+
+        screen.innerHTML = `
+
+            <video
+                id="mainVideo"
+                playsinline
+                controls
+                autoplay
+                preload="metadata"
+                src="${escapeHTML(source)}"
+            ></video>
+
+        `;
+
+        createVideoControls();
+
+        const video =
+            document.getElementById(
+                "mainVideo"
+            );
+
+        video.addEventListener(
+            "error",
+            ()=>{
+                toast(
+                    "Não foi possível reproduzir esta URL."
+                );
+            }
+        );
+
+        setTimeout(
+            enterCinemaMode,
+            80
+        );
+
+        return;
+
+    }
+
+
+    /* ===============================
+       PESQUISA OFICIAL
+       =============================== */
+
+    if(
+        type==="search"
+    ){
+
+        screen.innerHTML = `
+
+            <div class="youtube-fallback">
+
+                <div class="eyebrow">
+                    PESQUISA OFICIAL
+                </div>
+
+                <h2>
+                    ${escapeHTML(title)}
+                </h2>
+
+                <p>
+                    Procure a página oficial,
+                    trailer ou fonte autorizada.
+                </p>
+
+                <button
+                    class="btn primary"
+                    id="officialSearch"
+                >
+                    Pesquisar
+                </button>
+
+            </div>
+
+        `;
+
+        document.getElementById(
+            "officialSearch"
+        ).onclick =
+            ()=>{
+                window.open(
+                    "https://www.google.com/search?q="+
+                    encodeURIComponent(
+                        title+
+                        " trailer oficial"
+                    ),
+                    "_blank",
+                    "noopener"
+                );
+            };
+
+        return;
+
+    }
+
+}
+
+
+/* =========================================================
+   CONTROLES DE VÍDEO
+   ========================================================= */
+
+function createVideoControls(){
+
+    document.getElementById(
+        "playerControls"
+    ).innerHTML = `
+
+        <button data-video="play">
+            ▶
+        </button>
+
+        <button data-video="pause">
+            ⏸
+        </button>
+
+        <button data-video="back">
+            ↶ 10s
+        </button>
+
+        <button data-video="forward">
+            10s ↷
+        </button>
+
+        <select id="videoSpeed">
+
+            <option value=".5">
+                0.5x
+            </option>
+
+            <option value=".75">
+                0.75x
+            </option>
+
+            <option
+                value="1"
+                selected
+            >
+                1x
+            </option>
+
+            <option value="1.25">
+                1.25x
+            </option>
+
+            <option value="1.5">
+                1.5x
+            </option>
+
+            <option value="2">
+                2x
+            </option>
+
+        </select>
+
+        <button data-video="mute">
+            🔊
+        </button>
+
+        <span class="grow"></span>
+
+        <button data-video="pip">
+            PiP
+        </button>
+
+        <button data-video="fullscreen">
+            ⛶ Tela cheia
+        </button>
+
+    `;
+
+}
+
+
+/* =========================================================
+   ADMIN LOGIN
+   ========================================================= */
+
+function showAdmin(){
+
+    if(adminLogged){
+
+        openAdminPanel();
+
+        return;
+
+    }
+
+    document.getElementById(
+        "adminRoot"
+    ).innerHTML = `
+
+        <div style="
+            min-height:500px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+        ">
+
+            <div class="login">
+
+                <div class="eyebrow">
+                    CINEVERSE
+                </div>
+
+                <h2>
+                    Painel administrativo
+                </h2>
+
+                <p class="muted">
+                    Gerencie filmes, séries,
+                    episódios, abas e tema.
+                </p>
+
+                <div class="field">
+
+                    <label>
+                        Nome
+                    </label>
+
+                    <input
+                        id="loginUser"
+                        placeholder="Usuário"
+                    >
+
+                </div>
+
+                <br>
+
+                <div class="field">
+
+                    <label>
+                        Senha
+                    </label>
+
+                    <input
+                        id="loginPass"
+                        type="password"
+                        placeholder="Senha"
+                    >
+
+                </div>
+
+                <br>
+
+                <button
+                    class="btn primary"
+                    id="loginButton"
+                    style="width:100%"
+                >
+                    Entrar
+                </button>
+
+                <p
+                    id="loginError"
+                    class="muted"
+                ></p>
+
+            </div>
+
+        </div>
+
+    `;
+
+    document.getElementById(
+        "loginButton"
+    ).onclick =
+        adminLogin;
+
+    openModal(
+        "adminModal"
+    );
+
+}
+
+function adminLogin(){
+
+    const user =
+        document.getElementById(
+            "loginUser"
+        ).value;
+
+    const pass =
+        document.getElementById(
+            "loginPass"
+        ).value;
+
+    if(
+        user==="Akira_yr" &&
+        pass==="Akirazg2234"
+    ){
+
+        adminLogged =
+            true;
+
+        toast(
+            "Login realizado."
+        );
+
+        openAdminPanel();
+
+    }else{
+
+        document.getElementById(
+            "loginError"
+        ).textContent =
+            "Usuário ou senha incorretos.";
+
+    }
+
+}
+
+
+/* =========================================================
+   ADMIN PANEL
+   ========================================================= */
+
+function openAdminPanel(){
+
+    document.getElementById(
+        "adminRoot"
+    ).innerHTML = `
+
+        <div class="admin-layout">
+
+            <aside class="admin-side">
+
+                <button data-admin="dashboard">
+                    📊 Dashboard
+                </button>
+
+                <button data-admin="catalog">
+                    🎬 Catálogo
+                </button>
+
+                <button data-admin="movie">
+                    ＋ Filme
+                </button>
+
+                <button data-admin="series">
+                    ＋ Série
+                </button>
+
+                <button data-admin="tabs">
+                    🗂 Abas
+                </button>
+
+                <button data-admin="theme">
+                    🎨 Tema
+                </button>
+
+                <button data-admin="reset">
+                    ♻ Restaurar
+                </button>
+
+                <button data-admin="logout">
+                    🚪 Sair
+                </button>
+
+            </aside>
+
+            <section class="admin-main">
+
+                <div
+                    id="adminContent"
+                ></div>
+
+            </section>
+
+        </div>
+    `;
+
+    document
+        .querySelectorAll(
+            "[data-admin]"
+        )
+        .forEach(
+            button=>{
+                button.onclick =
+                    ()=>{
+                        adminPage(
+                            button.dataset.admin
+                        );
+                    };
+            }
+        );
+
+    adminPage(
+        "dashboard"
+    );
+
+}
+
+
+/* =========================================================
+   ADMIN PAGES
+   ========================================================= */
+
+function adminPage(page){
+
+    const content =
+        document.getElementById(
+            "adminContent"
+        );
+
+    if(!content)return;
+
+    document
+        .querySelectorAll(
+            "[data-admin]"
+        )
+        .forEach(
+            x =>
+                x.classList.remove(
+                    "active"
+                )
+        );
+
+    const active =
+        document.querySelector(
+            `[data-admin="${page}"]`
+        );
+
+    if(active){
+
+        active.classList.add(
+            "active"
+        );
+
+    }
+
+
+    if(
+        page==="dashboard"
+    ){
+
+        adminDashboard();
+
+        return;
+
+    }
+
+    if(
+        page==="catalog"
+    ){
+
+        adminCatalog();
+
+        return;
+
+    }
+
+    if(
+        page==="movie"
+    ){
+
+        itemForm(
+            "movie"
+        );
+
+        return;
+
+    }
+
+    if(
+        page==="series"
+    ){
+
+        itemForm(
+            "series"
+        );
+
+        return;
+
+    }
+
+    if(
+        page==="tabs"
+    ){
+
+        adminTabs();
+
+        return;
+
+    }
+
+    if(
+        page==="theme"
+    ){
+
+        adminTheme();
+
+        return;
+
+    }
+
+    if(
+        page==="reset"
+    ){
+
+        if(
+            confirm(
+                "Restaurar catálogo demo?"
+            )
+        ){
+
+            STATE =
+                clone(
+                    DEFAULT_STATE
+                );
+
+            saveState();
+
+            render();
+
+            adminPage(
+                "dashboard"
+            );
+
+            toast(
+                "Demo restaurada."
+            );
+
+        }
+
+        return;
+
+    }
+
+    if(
+        page==="logout"
+    ){
+
+        adminLogged =
+            false;
+
+        closeModal(
+            "adminModal"
+        );
+
+        toast(
+            "Sessão encerrada."
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   DASHBOARD
+   ========================================================= */
+
+function adminDashboard(){
+
+    const content =
+        document.getElementById(
+            "adminContent"
+        );
+
+    const movies =
+        STATE.items.filter(
+            x=>x.type==="movie"
+        ).length;
+
+    const series =
+        STATE.items.filter(
+            x=>x.type==="series"
+        ).length;
+
+    let episodes =
+        0;
+
+    STATE.items
+        .filter(
+            x=>x.type==="series"
+        )
+        .forEach(
+            series=>{
+                (
+                    series.seasons || []
+                ).forEach(
+                    season=>{
+                        episodes +=
+                            season.episodes.length;
+                    }
+                );
+            }
+        );
+
+    content.innerHTML = `
+
+        <div class="eyebrow">
+            ADMIN
+        </div>
+
+        <h2 class="admin-title">
+            Dashboard
+        </h2>
+
+        <div class="stats">
+
+            <div class="stat">
+                Filmes
+                <strong>
+                    ${movies}
+                </strong>
+            </div>
+
+            <div class="stat">
+                Séries
+                <strong>
+                    ${series}
+                </strong>
+            </div>
+
+            <div class="stat">
+                Episódios
+                <strong>
+                    ${episodes}
+                </strong>
+            </div>
+
+        </div>
+
+        <div class="tab-system-note">
+            <strong>
+                ☁ Sincronização online
+            </strong>
+            <br>
+            ${isCloudConfigured() ? "🟢 Supabase conectado — catálogo compartilhado." : "🟠 Supabase ainda não configurado — este site continuará local até você preencher a configuração."}
+        </div>
+
+        <div
+            class="tab-system-note"
+        >
+            <strong>
+                Sistema de abas corrigido
+            </strong>
+
+            <br>
+
+            Agora cada filme ou série possui
+            um <b>tabId</b>. Isso significa que
+            o conteúdo aparece somente na aba
+            selecionada no cadastro.
+        </div>
+
+    `;
+
+}
+
+
+/* =========================================================
+   CATÁLOGO
+   ========================================================= */
+
+function adminCatalog(){
+
+    const content =
+        document.getElementById(
+            "adminContent"
+        );
+
+    content.innerHTML = `
+
+        <div class="section-head">
+
+            <div>
+
+                <div class="eyebrow">
+                    GERENCIAMENTO
+                </div>
+
+                <h2>
+                    Catálogo
+                </h2>
+
+            </div>
+
+            <div style="
+                display:flex;
+                gap:7px;
+                flex-wrap:wrap;
+            ">
+
+                <button
+                    class="btn primary"
+                    id="newMovieAdmin"
+                >
+                    ＋ Filme
+                </button>
+
+                <button
+                    class="btn"
+                    id="newSeriesAdmin"
+                >
+                    ＋ Série
+                </button>
+
+            </div>
+
+        </div>
+
+        <div class="admin-list">
+
+            ${
+                STATE.items.length
+
+                ?
+
+                STATE.items
+                    .map(
+                        item=>{
+
+                            const tab =
+                                getTab(
+                                    item.tabId
+                                );
+
+                            return `
+
+                                <div class="admin-row">
+
+                                    <div class="admin-row-main">
+
+                                        <div class="admin-row-title">
+                                            ${escapeHTML(item.title)}
+                                        </div>
+
+                                        <div class="meta">
+
+                                            ${
+                                                item.type==="series"
+                                                    ? "Série"
+                                                    : "Filme"
+                                            }
+
+                                            ·
+
+                                            Aba:
+                                            <strong>
+                                                ${escapeHTML(tab ? tab.name : "Sem aba")}
+                                            </strong>
+
+                                            ·
+
+                                            ${escapeHTML(item.year || "")}
+
+                                        </div>
+
+                                    </div>
+
+                                    <div class="admin-row-actions">
+
+                                        ${
+                                            item.type==="series"
+
+                                            ?
+
+                                            `
+                                                <button
+                                                    class="small"
+                                                    data-episodes="${item.id}"
+                                                >
+                                                    Episódios
+                                                </button>
+                                            `
+
+                                            :
+
+                                            ""
+                                        }
+
+                                        <button
+                                            class="small"
+                                            data-edit="${item.id}"
+                                        >
+                                            Editar
+                                        </button>
+
+                                        <button
+                                            class="small"
+                                            data-delete="${item.id}"
+                                        >
+                                            Excluir
+                                        </button>
+
+                                    </div>
+
+                                </div>
+
+                            `;
+
+                        }
+                    )
+                    .join("")
+
+                :
+
+                `
+                    <div class="empty">
+                        Nenhum conteúdo cadastrado.
+                    </div>
+                `
+            }
+
+        </div>
+    `;
+
+    document.getElementById(
+        "newMovieAdmin"
+    ).onclick =
+        ()=>{
+            itemForm(
+                "movie"
+            );
+        };
+
+    document.getElementById(
+        "newSeriesAdmin"
+    ).onclick =
+        ()=>{
+            itemForm(
+                "series"
+            );
+        };
+
+    document
+        .querySelectorAll(
+            "[data-edit]"
+        )
+        .forEach(
+            button=>{
+                button.onclick =
+                    ()=>{
+                        const item =
+                            getItem(
+                                button.dataset.edit
+                            );
+
+                        itemForm(
+                            item.type,
+                            item.id
+                        );
+
+                    };
+            }
+        );
+
+    document
+        .querySelectorAll(
+            "[data-delete]"
+        )
+        .forEach(
+            button=>{
+                button.onclick =
+                    ()=>{
+                        deleteItem(
+                            button.dataset.delete
+                        );
+                    };
+            }
+        );
+
+    document
+        .querySelectorAll(
+            "[data-episodes]"
+        )
+        .forEach(
+            button=>{
+                button.onclick =
+                    ()=>{
+                        episodeManager(
+                            button.dataset.episodes
+                        );
+                    };
+            }
+        );
+
+}
+
+
+/* =========================================================
+   FORM DE FILME / SÉRIE
+   ========================================================= */
+
+function itemForm(
+    type,
+    editId=null
+){
+
+    editingId =
+        editId;
+
+    let item =
+        editId
+            ? getItem(editId)
+            : {
+                id:uid("item"),
+                type:type,
+                title:"",
+                year:"",
+                rating:"",
+                genre:"",
+                tabId:"",
+                description:"",
+                cover:"",
+                sourceType:"youtube",
+                source:"",
+                seasons:[]
+            };
+
+    /*
+        Se for conteúdo antigo sem tabId,
+        escolhemos automaticamente a aba
+        correspondente.
+    */
+
+    if(!item.tabId){
+
+        item.tabId =
+            type==="movie"
+                ? (
+                    findTabIdByName(
+                        STATE,
+                        "Filmes"
+                    ) ||
+                    STATE.tabs[0]?.id
+                )
+                : (
+                    findTabIdByName(
+                        STATE,
+                        "Séries"
+                    ) ||
+                    STATE.tabs[0]?.id
+                );
+
+    }
+
+    const content =
+        document.getElementById(
+            "adminContent"
+        );
+
+    content.innerHTML = `
+
+        <div class="eyebrow">
+            ${editId ? "EDITAR" : "NOVO"}
+        </div>
+
+        <h2 class="admin-title">
+            ${
+                type==="movie"
+                    ? "Filme"
+                    : "Série"
+            }
+        </h2>
+
+        <div class="form">
+
+            <div class="field">
+
+                <label>
+                    Nome
+                </label>
+
+                <input
+                    id="itemTitle"
+                    value="${escapeHTML(item.title)}"
+                    placeholder="Nome"
+                >
+
+            </div>
+
+            <div class="field">
+
+                <label>
+                    Ano
+                </label>
+
+                <input
+                    id="itemYear"
+                    value="${escapeHTML(item.year || "")}"
+                    placeholder="2026"
+                >
+
+            </div>
+
+            <div class="field">
+
+                <label>
+                    Nota
+                </label>
+
+                <input
+                    id="itemRating"
+                    value="${escapeHTML(item.rating || "")}"
+                    placeholder="9.5"
+                >
+
+            </div>
+
+            <div class="field">
+
+                <label>
+                    Gênero
+                </label>
+
+                <input
+                    id="itemGenre"
+                    value="${escapeHTML(item.genre || "")}"
+                    placeholder="Ação"
+                >
+
+            </div>
+
+
+            <!--
+                AQUI ESTÁ A CORREÇÃO PRINCIPAL.
+
+                TODAS as abas são mostradas.
+                Não importa se são Filmes,
+                Séries, Minecraft ou uma criada
+                pelo usuário.
+            -->
+
+            <div class="field full">
+
+                <label>
+                    📁 Aba onde o conteúdo aparecerá
+                </label>
+
+                <select
+                    id="itemTab"
+                >
+
+                    ${
+                        STATE.tabs
+                            .map(
+                                tab=>`
+
+                                    <option
+                                        value="${tab.id}"
+                                        ${
+                                            item.tabId===tab.id
+                                                ? "selected"
+                                                : ""
+                                        }
+                                    >
+                                        ${escapeHTML(tab.name)}
+                                    </option>
+
+                                `
+                            )
+                            .join("")
+                    }
+
+                </select>
+
+                <div class="tab-select-note">
+
+                    O conteúdo será exibido
+                    <strong>somente nesta aba</strong>.
+
+                    Se escolher
+                    <strong>Minecraft</strong>,
+                    por exemplo, ele não será mostrado
+                    em Filmes ou Séries.
+
+                </div>
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Capa — URL
+                </label>
+
+                <input
+                    id="itemCover"
+                    value="${escapeHTML(item.cover || "")}"
+                    placeholder="https://..."
+                >
+
+            </div>
+
+            <div class="field full">
+
+                <label>
+                    Descrição
+                </label>
+
+                <textarea
+                    id="itemDescription"
+                >${escapeHTML(item.description || "")}</textarea>
+
+            </div>
+
+            <div class="field">
+
+                <label>
+                    Tipo da fonte
+                </label>
+
+                <select
+                    id="itemSourceType"
+                >
+
+                    <option
+                        value="youtube"
+                        ${
+                            item.sourceType==="youtube"
+                                ? "selected"
+                                : ""
+                        }
+                    >
+                        YouTube
+                    </option>
+
+                    <option
+                        value="direct"
+                        ${
+                            item.sourceType==="direct"
+                                ? "selected"
+                                : ""
+                        }
+                    >
+                        URL direta
+                    </option>
+
+                    <option
+                        value="search"
+                        ${
+                            item.sourceType==="search"
+                                ? "selected"
+                                : ""
+                        }
+                    >
+                        Pesquisa oficial
+                    </option>
+
+                    <option
+                        value="supabase"
+                        ${
+                            item.sourceType==="supabase"
+                                ? "selected"
+                                : ""
+                        }
+                    >
+                        Vídeo na nuvem
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div class="field">
+
+                <label>
+                    URL
+                </label>
+
+                <input
+                    id="itemSource"
+                    value="${
+                        item.sourceType==="local"
+                            ? ""
+                            : escapeHTML(
+                                item.source || ""
+                            )
+                    }"
+                    placeholder="Link do YouTube ou URL direta"
+                >
+
+            </div>
+
+            <div class="field full file-box">
+
+                <strong>
+                    🎬 Ou selecione um vídeo do dispositivo
+                </strong>
+
+                <input
+                    id="itemFile"
+                    type="file"
+                    accept="video/*,.mp4,.webm,.m4v,.mov,.mkv"
+                >
+
+                <div
+                    class="file-name"
+                    id="fileSelectedName"
+                ></div>
+
+                <small>
+                    Vídeos grandes, inclusive de 1, 2 ou
+                    3 horas, são usados diretamente do
+                    arquivo selecionado. O site não tenta
+                    copiar vários GB para o localStorage.
+                </small>
+
+            </div>
+
+        </div>
+
+        <div class="form-actions">
+
+            <button
+                class="btn"
+                id="cancelItem"
+            >
+                Cancelar
+            </button>
+
+            <button
+                class="btn primary"
+                id="saveItem"
+            >
+                Salvar
+            </button>
+
+        </div>
+    `;
+
+    document.getElementById(
+        "cancelItem"
+    ).onclick =
+        ()=>{
+            editingId =
+                null;
+
+            adminPage(
+                "catalog"
+            );
+        };
+
+    document.getElementById(
+        "itemFile"
+    ).onchange =
+        ()=>{
+            const file =
+                document.getElementById(
+                    "itemFile"
+                ).files[0];
+
+            if(file){
+
+                document.getElementById(
+                    "fileSelectedName"
+                ).textContent =
+                    `Selecionado: ${file.name} · ${formatSize(file.size)}`;
+
+                document.getElementById(
+                    "itemSourceType"
+                ).value =
+                    "local";
+
+            }
+
+        };
+
+    document.getElementById(
+        "saveItem"
+    ).onclick =
+        ()=>{
+            saveItem(
+                type
+            );
+        };
+
+}
+
+
+/* =========================================================
+   SALVAR FILME / SÉRIE
+   ========================================================= */
+
+async function saveItem(
+    type
+){
+
+    const title = document.getElementById("itemTitle").value.trim();
+
+    if(!title){
+        toast("Digite o nome.");
+        return;
+    }
+
+    let item = editingId ? getItem(editingId) : {
+        id:uid("item"),
+        type:type,
+        seasons:[]
+    };
+
+    item.type = type;
+    item.title = title;
+    item.year = document.getElementById("itemYear").value.trim();
+    item.rating = document.getElementById("itemRating").value.trim();
+    item.genre = document.getElementById("itemGenre").value.trim();
+    item.tabId = document.getElementById("itemTab").value;
+    item.cover = document.getElementById("itemCover").value.trim();
+    item.description = document.getElementById("itemDescription").value.trim();
+    item.sourceType = document.getElementById("itemSourceType").value;
+    item.source = document.getElementById("itemSource").value.trim();
+
+    const file = document.getElementById("itemFile").files[0];
+
+    if(file){
+        if(!isCloudConfigured()){
+            toast("Configure o Supabase para enviar o vídeo para todos.");
+            return;
+        }
+
+        const saveButton=document.getElementById("saveItem");
+        saveButton.disabled=true;
+        saveButton.textContent="Enviando vídeo... 0%";
+
+        try{
+            item.source=await uploadVideoToCloud(file,percent=>{
+                saveButton.textContent=`Enviando vídeo... ${percent}%`;
+            });
+            item.sourceType="supabase";
+        }catch(error){
+            console.error(error);
+            toast("Falha no upload. Verifique o Supabase e o armazenamento.");
+            saveButton.disabled=false;
+            saveButton.textContent="Salvar";
+            return;
+        }
+    }
+
+    if(type==="series" && !Array.isArray(item.seasons)){
+        item.seasons=[];
+    }
+
+    if(!editingId){
+        STATE.items.push(item);
+    }
+
+    saveState();
+
+    editingId=null;
+    render();
+
+    toast(`Salvo na aba "${getTab(item.tabId)?.name || "selecionada"}" e sincronizado.`);
+    adminPage("catalog");
+}
+
+
+/* =========================================================
+   EXCLUIR CONTEÚDO
+   ========================================================= */
+
+function deleteItem(id){
+
+    const item =
+        getItem(id);
+
+    if(!item)return;
+
+    if(
+        !confirm(
+            `Excluir "${item.title}"?`
+        )
+    ){
+
+        return;
+
+    }
+
+    STATE.items =
+        STATE.items.filter(
+            x=>x.id!==id
+        );
+
+    saveState();
+
+    render();
+
+    toast(
+        "Conteúdo excluído."
+    );
+
+    adminPage(
+        "catalog"
+    );
+
+}
+
+
+/* =========================================================
+   GERENCIAR ABAS
+   ========================================================= */
+
+function adminTabs(){
+
+    const content =
+        document.getElementById(
+            "adminContent"
+        );
+
+    content.innerHTML = `
+
+        <div class="eyebrow">
+            ORGANIZAÇÃO
+        </div>
+
+        <h2>
+            Abas
+        </h2>
+
+        <p class="muted">
+            Agora você pode editar ou excluir
+            qualquer aba, inclusive as que já vêm
+            no CineVerse.
+        </p>
+
+        <div style="
+            display:flex;
+            gap:8px;
+            margin:15px 0;
+        ">
+
+            <input
+                id="newTabName"
+                placeholder="Ex: Minecraft"
+            >
+
+            <button
+                class="btn primary"
+                id="createTab"
+                style="
+                    width:auto;
+                    white-space:nowrap;
+                "
+            >
+                ＋ Criar
+            </button>
+
+        </div>
+
+        <div class="admin-list">
+
+            ${
+                STATE.tabs
+                    .map(
+                        tab=>`
+
+                            <div class="admin-row">
+
+                                <div class="admin-row-main">
+
+                                    <div class="admin-row-title">
+                                        ${escapeHTML(tab.name)}
+                                    </div>
+
+                                    <div class="meta">
+
+                                        ID:
+                                        ${escapeHTML(tab.id)}
+
+                                        ·
+
+                                        ${
+                                            tab.type==="favorites"
+                                                ? "Minha lista"
+                                                : tab.type==="home"
+                                                    ? "Início"
+                                                    : "Aba de conteúdo"
+                                        }
+
+                                    </div>
+
+                                </div>
+
+                                <div class="admin-row-actions">
+
+                                    <button
+                                        class="small"
+                                        data-rename-tab="${tab.id}"
+                                    >
+                                        ✏ Editar
+                                    </button>
+
+                                    <button
+                                        class="small"
+                                        data-delete-tab="${tab.id}"
+                                    >
+                                        🗑 Apagar
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        `
+                    )
+                    .join("")
+            }
+
+        </div>
+
+        <div class="tab-system-note">
+
+            <strong>
+                Como funciona:
+            </strong>
+
+            <br><br>
+
+            Você pode criar uma aba chamada
+            <strong>Minecraft</strong>, por exemplo.
+
+            Depois, ao cadastrar um filme,
+            escolha <strong>Minecraft</strong>
+            no campo <strong>"Aba onde o conteúdo aparecerá"</strong>.
+
+            O filme ficará somente nela.
+
+        </div>
+    `;
+
+    document.getElementById(
+        "createTab"
+    ).onclick =
+        createTab;
+
+    document
+        .querySelectorAll(
+            "[data-rename-tab]"
+        )
+        .forEach(
+            button=>{
+                button.onclick =
+                    ()=>{
+                        renameTab(
+                            button.dataset.renameTab
+                        );
+                    };
+            }
+        );
+
+    document
+        .querySelectorAll(
+            "[data-delete-tab]"
+        )
+        .forEach(
+            button=>{
+                button.onclick =
+                    ()=>{
+                        deleteTab(
+                            button.dataset.deleteTab
+                        );
+                    };
+            }
+        );
+
+}
+
+
+/* =========================================================
+   CRIAR ABA
+   ========================================================= */
+
+function createTab(){
+
+    const input =
+        document.getElementById(
+            "newTabName"
+        );
+
+    const name =
+        input.value.trim();
+
+    if(!name){
+
+        toast(
+            "Digite o nome da aba."
+        );
+
+        return;
+
+    }
+
+    /*
+        Evita abas duplicadas.
+    */
+
+    const alreadyExists =
+        STATE.tabs.some(
+            tab =>
+                tab.name
+                    .toLowerCase()
+                    ===
+                name.toLowerCase()
+        );
+
+    if(alreadyExists){
+
+        toast(
+            "Essa aba já existe."
+        );
+
+        return;
+
+    }
+
+    STATE.tabs.push({
+
+        id:uid("tab"),
+
+        name:name,
+
+        type:"normal"
+
+    });
+
+    saveState();
+
+    render();
+
+    toast(
+        "Aba criada."
+    );
+
+    adminTabs();
+
+}
+
+
+/* =========================================================
+   RENOMEAR ABA
+   ========================================================= */
+
+function renameTab(id){
+
+    const tab =
+        getTab(id);
+
+    if(!tab)return;
+
+    const newName =
+        prompt(
+            "Digite o novo nome da aba:",
+            tab.name
+        );
+
+    if(
+        !newName ||
+        !newName.trim()
+    ){
+
+        return;
+
+    }
+
+    const name =
+        newName.trim();
+
+    const duplicate =
+        STATE.tabs.some(
+            x =>
+                x.id!==id &&
+                x.name
+                    .toLowerCase()
+                    ===
+                name.toLowerCase()
+        );
+
+    if(duplicate){
+
+        toast(
+            "Já existe uma aba com esse nome."
+        );
+
+        return;
+
+    }
+
+    tab.name =
+        name;
+
+    saveState();
+
+    render();
+
+    adminTabs();
+
+    toast(
+        "Aba renomeada."
+    );
+
+}
+
+
+/* =========================================================
+   EXCLUIR ABA
+   ========================================================= */
+
+function deleteTab(id){
+
+    const tab =
+        getTab(id);
+
+    if(!tab)return;
+
+    if(
+        STATE.tabs.length<=1
+    ){
+
+        toast(
+            "Você precisa ter pelo menos uma aba."
+        );
+
+        return;
+
+    }
+
+    if(
+        !confirm(
+            `Apagar a aba "${tab.name}"?`
+        )
+    ){
+
+        return;
+
+    }
+
+    STATE.tabs =
+        STATE.tabs.filter(
+            x=>x.id!==id
+        );
+
+    /*
+        Conteúdos que estavam nessa aba
+        são movidos para a primeira aba
+        disponível.
+
+        Assim nenhum filme fica perdido.
+    */
+
+    const fallback =
+        STATE.tabs[0];
+
+    STATE.items.forEach(
+        item=>{
+            if(
+                item.tabId === id
+            ){
+
+                item.tabId =
+                    fallback.id;
+
+            }
+        }
+    );
+
+    /*
+        Se o usuário estava na aba apagada,
+        vamos para a primeira aba.
+    */
+
+    if(
+        currentPage===id
+    ){
+
+        currentPage =
+            fallback.id;
+
+    }
+
+    saveState();
+
+    render();
+
+    adminTabs();
+
+    toast(
+        "Aba apagada."
+    );
+
+}
+
+
+/* =========================================================
+   ADMIN TEMA
+   ========================================================= */
+
+function adminTheme(){
+
+    const s =
+        STATE.settings;
+
+    document.getElementById(
+        "adminContent"
+    ).innerHTML = `
+
+        <div class="eyebrow">
+            PERSONALIZAÇÃO
+        </div>
+
+        <h2>
+            Tema
+        </h2>
+
+        <div class="form">
+
+            <div class="field">
+
+                <label>
+                    Nome
+                </label>
+
+                <input
+                    id="themeName"
+                    value="${escapeHTML(s.name)}"
+                >
+
+            </div>
+
+            <div class="field">
+
+                <label>
+                    Descrição
+                </label>
+
+                <input
+                    id="themeTag"
+                    value="${escapeHTML(s.tag)}"
+                >
+
+            </div>
+
+            <div class="field">
+
+                <label>
+                    Cor principal
+                </label>
+
+                <input
+                    type="color"
+                    id="themeAccent"
+                    value="${s.accent}"
+                >
+
+            </div>
+
+            <div class="field">
+
+                <label>
+                    Cor secundária
+                </label>
+
+                <input
+                    type="color"
+                    id="themeAccent2"
+                    value="${s.accent2}"
+                >
+
+            </div>
+
+            <div class="field">
+
+                <label>
+                    Fundo
+                </label>
+
+                <input
+                    type="color"
+                    id="themeBg"
+                    value="${s.bg}"
+                >
+
+            </div>
+
+            <div class="field">
+
+                <label>
+                    Cards
+                </label>
+
+                <input
+                    type="color"
+                    id="themePanel"
+                    value="${s.panel}"
+                >
+
+            </div>
+
+        </div>
+
+        <div class="form-actions">
+
+            <button
+                class="btn primary"
+                id="saveTheme"
+            >
+                Aplicar
+            </button>
+
+        </div>
+    `;
+
+    document.getElementById(
+        "saveTheme"
+    ).onclick =
+        ()=>{
+
+            STATE.settings = {
+
+                name:
+                    document.getElementById(
+                        "themeName"
+                    ).value.trim()
+                    ||
+                    "CineVerse",
+
+                tag:
+                    document.getElementById(
+                        "themeTag"
+                    ).value.trim()
+                    ||
+                    "Seu universo de entretenimento.",
+
+                accent:
+                    document.getElementById(
+                        "themeAccent"
+                    ).value,
+
+                accent2:
+                    document.getElementById(
+                        "themeAccent2"
+                    ).value,
+
+                bg:
+                    document.getElementById(
+                        "themeBg"
+                    ).value,
+
+                panel:
+                    document.getElementById(
+                        "themePanel"
+                    ).value
+
+            };
+
+            saveState();
+
+            applyTheme();
+
+            toast(
+                "Tema atualizado."
+            );
+
+        };
+
+}
+
+
+/* =========================================================
+   EPISÓDIOS — ADMIN
+   ========================================================= */
+
+function episodeManager(
+    seriesId
+){
+
+    const series =
+        getItem(
+            seriesId
+        );
+
+    if(!series)return;
+
+    if(
+        !Array.isArray(
+            series.seasons
+        )
+    ){
+
+        series.seasons=[];
+
+    }
+
+    const content =
+        document.getElementById(
+            "adminContent"
+        );
+
+    content.innerHTML = `
+
+        <div class="eyebrow">
+            SÉRIE
+        </div>
+
+        <h2>
+            ${escapeHTML(series.title)}
+        </h2>
+
+        <div style="
+            display:flex;
+            gap:8px;
+            flex-wrap:wrap;
+            margin-bottom:15px;
+        ">
+
+            <button
+                class="btn primary"
+                id="newSeason"
+            >
+                ＋ Temporada
+            </button>
+
+            <button
+                class="btn"
+                id="backCatalog"
+            >
+                ← Catálogo
+            </button>
+
+        </div>
+
+        <div
+            id="seasonManager"
+        ></div>
+    `;
+
+    document.getElementById(
+        "newSeason"
+    ).onclick =
+        ()=>{
+
+            const number =
+                series.seasons.length
+                    ? Math.max(
+                        ...series.seasons.map(
+                            x=>x.number
+                        )
+                    )+1
+                    : 1;
+
+            series.seasons.push({
+
+                number,
+
+                episodes:[]
+
+            });
+
+            saveState();
+
+            episodeManager(
+                seriesId
+            );
+
+        };
+
+    document.getElementById(
+        "backCatalog"
+    ).onclick =
+        ()=>{
+            adminPage(
+                "catalog"
+            );
+        };
+
+    const manager =
+        document.getElementById(
+            "seasonManager"
+        );
+
+    if(!series.seasons.length){
+
+        manager.innerHTML = `
+
+            <div class="empty">
+                Nenhuma temporada cadastrada.
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+    manager.innerHTML =
+        series.seasons
+            .map(
+                season=>`
+
+                    <div class="season-box">
+
+                        <div style="
+                            display:flex;
+                            align-items:center;
+                            justify-content:space-between;
+                            gap:10px;
+                        ">
+
+                            <h3>
+                                Temporada ${season.number}
+                            </h3>
+
+                            <button
+                                class="btn primary"
+                                data-new-episode="${season.number}"
+                            >
+                                ＋ Episódio
+                            </button>
+
+                        </div>
+
+                        ${
+                            season.episodes.length
+
+                            ?
+
+                            season.episodes
+                                .map(
+                                    ep=>`
+
+                                        <div class="episode">
+
+                                            <div class="episode-number">
+                                                ${ep.number}
+                                            </div>
+
+                                            <div class="episode-info">
+
+                                                <div class="episode-title">
+                                                    ${escapeHTML(ep.title)}
+                                                </div>
+
+                                                <div class="meta">
+                                                    ${escapeHTML(ep.duration || "")}
+                                                </div>
+
+                                            </div>
+
+                                            <div class="admin-row-actions">
+
+                                                <button
+                                                    class="small"
+                                                    data-edit-episode="${season.number}"
+                                                    data-episode-id="${ep.id}"
+                                                >
+                                                    Editar
+                                                </button>
+
+                                                <button
+                                                    class="small"
+                                                    data-delete-episode="${season.number}"
+                                                    data-episode-id="${ep.id}"
+                                                >
+                                                    Excluir
+                                                </button>
+
+                                            </div>
+
+                                        </div>
+
+                                    `
+                                )
+                                .join("")
+
+                            :
+
+                            `<p class="muted">
+                                Nenhum episódio.
+                            </p>`
+
+                        }
+
+                    </div>
+
+                `
+            )
+            .join("");
+
+    document
+        .querySelectorAll(
+            "[data-new-episode]"
+        )
+        .forEach(
+            button=>{
+                button.onclick =
+                    ()=>{
+                        episodeForm(
+                            seriesId,
+                            Number(
+                                button.dataset.newEpisode
+                            )
+                        );
+                    };
+            }
+        );
+
+    document
+        .querySelectorAll(
+            "[data-edit-episode]"
+        )
+        .forEach(
+            button=>{
+                button.onclick =
+                    ()=>{
+                        episodeForm(
+                            seriesId,
+                            Number(
+                                button.dataset.editEpisode
+                            ),
+                            button.dataset.episodeId
+                        );
+                    };
+            }
+        );
+
+    document
+        .querySelectorAll(
+            "[data-delete-episode]"
+        )
+        .forEach(
+            button=>{
+                button.onclick =
+                    ()=>{
+                        deleteEpisode(
+                            seriesId,
+                            Number(
+                                button.dataset.deleteEpisode
+                            ),
+                            button.dataset.episodeId
+                        );
+                    };
+            }
+        );
+
+}
+
+
+/* =========================================================
+   FORM EPISÓDIO
+   ========================================================= */
+
+function episodeForm(
+    seriesId,
+    seasonNumber,
+    episodeId=null
+){
+
+    const series =
+        getItem(
+            seriesId
+        );
+
+    const season =
+        series.seasons.find(
+            x =>
+                x.number ===
+                seasonNumber
+        );
+
+    let episode =
+        episodeId
+            ?
+                season.episodes.find(
+                    x =>
+                        x.id ===
+                        episodeId
+                )
+
+            :
+
+                {
+                    title:"",
+                    duration:"",
+                    sourceType:"youtube",
+                    source:""
+                };
+
+    const content =
+        document.getElementById(
+            "adminContent"
+        );
+
+    content.innerHTML = `
+
+        <div class="eyebrow">
+            EPISÓDIO
+        </div>
+
+        <h2>
+            ${escapeHTML(series.title)}
+        </h2>
+
+        <p class="muted">
+            Temporada ${seasonNumber}
+        </p>
+
+        <div class="form">
+
+            <div class="field">
+
+                <label>
+                    Nome
+                </label>
+
+                <input
+                    id="episodeTitle"
+                    value="${escapeHTML(episode.title)}"
+                >
+
+            </div>
+
+            <div class="field">
+
+                <label>
+                    Duração
+                </label>
+
+                <input
+                    id="episodeDuration"
+                    value="${escapeHTML(episode.duration || "")}"
+                    placeholder="45 min"
+                >
+
+            </div>
+
+            <div class="field">
+
+                <label>
+                    Tipo
+                </label>
+
+                <select
+                    id="episodeType"
+                >
+
+                    <option
+                        value="youtube"
+                        ${
+                            episode.sourceType==="youtube"
+                                ? "selected"
+                                : ""
+                        }
+                    >
+                        YouTube
+                    </option>
+
+                    <option
+                        value="direct"
+                        ${
+                            episode.sourceType==="direct"
+                                ? "selected"
+                                : ""
+                        }
+                    >
+                        URL direta
+                    </option>
+
+                    <option
+                        value="supabase"
+                        ${
+                            episode.sourceType==="supabase"
+                                ? "selected"
+                                : ""
+                        }
+                    >
+                        Vídeo na nuvem
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div class="field">
+
+                <label>
+                    Link
+                </label>
+
+                <input
+                    id="episodeSource"
+                    value="${escapeHTML(episode.source || "")}"
+                    placeholder="https://youtube.com/watch?v=..."
+                >
+
+            </div>
+
+            <div class="field full file-box">
+
+                <strong>
+                    🎬 Arquivo do episódio
+                </strong>
+
+                <input
+                    id="episodeFile"
+                    type="file"
+                    accept="video/*,.mp4,.webm,.m4v,.mov,.mkv"
+                >
+
+                <div
+                    id="episodeFileName"
+                    class="file-name"
+                ></div>
+
+                <small>
+                    Arquivos longos são reproduzidos
+                    diretamente do aparelho.
+                </small>
+
+            </div>
+
+        </div>
+
+        <div class="form-actions">
+
+            <button
+                class="btn"
+                id="cancelEpisode"
+            >
+                Cancelar
+            </button>
+
+            <button
+                class="btn primary"
+                id="saveEpisode"
+            >
+                Salvar episódio
+            </button>
+
+        </div>
+    `;
+
+    document.getElementById(
+        "cancelEpisode"
+    ).onclick =
+        ()=>{
+            episodeManager(
+                seriesId
+            );
+        };
+
+    document.getElementById(
+        "episodeFile"
+    ).onchange =
+        ()=>{
+            const file =
+                document.getElementById(
+                    "episodeFile"
+                ).files[0];
+
+            if(file){
+
+                document.getElementById(
+                    "episodeFileName"
+                ).textContent =
+                    `Selecionado: ${file.name} · ${formatSize(file.size)}`;
+
+            }
+
+        };
+
+    document.getElementById(
+        "saveEpisode"
+    ).onclick =
+        async ()=>{
+
+            const title =
+                document.getElementById(
+                    "episodeTitle"
+                ).value.trim();
+
+            if(!title){
+
+                toast(
+                    "Digite o nome do episódio."
+                );
+
+                return;
+
+            }
+
+            let target =
+                episodeId
+                    ?
+                        episode
+                    :
+                        {
+                            id:uid("episode"),
+                            number:
+                                season.episodes.length+1
+                        };
+
+            target.title =
+                title;
+
+            target.duration =
+                document.getElementById(
+                    "episodeDuration"
+                ).value.trim();
+
+            target.sourceType =
+                document.getElementById(
+                    "episodeType"
+                ).value;
+
+            target.source =
+                document.getElementById(
+                    "episodeSource"
+                ).value.trim();
+
+            const file =
+                document.getElementById(
+                    "episodeFile"
+                ).files[0];
+
+            if(file){
+
+                if(!isCloudConfigured()){
+                    toast("Configure o Supabase para enviar o episódio para todos.");
+                    return;
+                }
+
+                try{
+                    target.source = await uploadVideoToCloud(file);
+                    target.sourceType = "supabase";
+                }catch(error){
+                    console.error(error);
+                    toast("Falha no upload do episódio.");
+                    return;
+                }
+
+            }
+
+            if(!episodeId){
+
+                season.episodes.push(
+                    target
+                );
+
+            }
+
+            saveState();
+
+            toast(
+                "Episódio salvo."
+            );
+
+            episodeManager(
+                seriesId
+            );
+
+        };
+
+}
+
+
+/* =========================================================
+   DELETE EPISODE
+   ========================================================= */
+
+function deleteEpisode(
+    seriesId,
+    seasonNumber,
+    episodeId
+){
+
+    if(
+        !confirm(
+            "Excluir este episódio?"
+        )
+    ){
+
+        return;
+
+    }
+
+    const series =
+        getItem(
+            seriesId
+        );
+
+    const season =
+        series.seasons.find(
+            x =>
+                x.number ===
+                seasonNumber
+        );
+
+    season.episodes =
+        season.episodes.filter(
+            x =>
+                x.id !==
+                episodeId
+        );
+
+    season.episodes.forEach(
+        (episode,index)=>{
+            episode.number =
+                index+1;
+        }
+    );
+
+    saveState();
+
+    toast(
+        "Episódio excluído."
+    );
+
+    episodeManager(
+        seriesId
+    );
+
+}
+
+
+/* =========================================================
+   EVENTOS GERAIS
+   ========================================================= */
+
+document.addEventListener(
+    "click",
+    async event=>{
+
+        const page =
+            event.target.closest(
+                "[data-page]"
+            );
+
+        if(page){
+
+            showTab(
+                page.dataset.page
+            );
+
+            return;
+
+        }
+
+        const favorite =
+            event.target.closest(
+                "[data-action='favorite']"
+            );
+
+        if(favorite){
+
+            toggleFavorite(
+                favorite.dataset.id
+            );
+
+            return;
+
+        }
+
+        const details =
+            event.target.closest(
+                "[data-action='details']"
+            );
+
+        if(details){
+
+            showDetails(
+                details.dataset.id
+            );
+
+            return;
+
+        }
+
+        const play =
+            event.target.closest(
+                "[data-action='play']"
+            );
+
+        if(play){
+
+            const item =
+                getItem(
+                    play.dataset.id
+                );
+
+            await playItem(
+                item
+            );
+
+            return;
+
+        }
+
+        const detailPlay =
+            event.target.closest(
+                "[data-detail-play]"
+            );
+
+        if(detailPlay){
+
+            const item =
+                getItem(
+                    detailPlay.dataset.detailPlay
+                );
+
+            await playItem(
+                item
+            );
+
+            return;
+
+        }
+
+        const detailFavorite =
+            event.target.closest(
+                "[data-detail-fav]"
+            );
+
+        if(detailFavorite){
+
+            toggleFavorite(
+                detailFavorite.dataset.detailFav
+            );
+
+            showDetails(
+                detailFavorite.dataset.detailFav
+            );
+
+            return;
+
+        }
+
+        const episodePlay =
+            event.target.closest(
+                "[data-episode-play]"
+            );
+
+        if(episodePlay){
+
+            await playEpisode(
+                episodePlay.dataset.episodePlay,
+                episodePlay.dataset.season,
+                episodePlay.dataset.episode
+            );
+
+            return;
+
+        }
+
+        const close =
+            event.target.closest(
+                "[data-close]"
+            );
+
+        if(close){
+
+            const modalId =
+                close.dataset.close;
+
+            closeModal(
+                modalId
+            );
+
+            if(
+                modalId ===
+                "playerModal"
+            ){
+
+                await exitCinemaMode();
+
+                document.body
+                    .classList.remove(
+                        "player-open"
+                    );
+
+            }
+
+            return;
+
+        }
+
+        const videoAction =
+            event.target.closest(
+                "[data-video]"
+            );
+
+        if(videoAction){
+
+            handleVideoAction(
+                videoAction.dataset.video
+            );
+
+            return;
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   VIDEO ACTIONS
+   ========================================================= */
+
+function handleVideoAction(
+    action
+){
+
+    const video =
+        document.getElementById(
+            "mainVideo"
+        );
+
+    if(!video)return;
+
+    if(
+        action==="play"
+    ){
+
+        video.play();
+
+    }
+
+    if(
+        action==="pause"
+    ){
+
+        video.pause();
+
+    }
+
+    if(
+        action==="back"
+    ){
+
+        video.currentTime =
+            Math.max(
+                0,
+                video.currentTime-10
+            );
+
+    }
+
+    if(
+        action==="forward"
+    ){
+
+        video.currentTime =
+            Math.min(
+                video.duration || Infinity,
+                video.currentTime+10
+            );
+
+    }
+
+    if(
+        action==="mute"
+    ){
+
+        video.muted =
+            !video.muted;
+
+    }
+
+    if(
+        action==="pip"
+    ){
+
+        if(
+            document.pictureInPictureEnabled
+        ){
+
+            if(
+                document.pictureInPictureElement
+            ){
+
+                document.exitPictureInPicture();
+
+            }else{
+
+                video
+                    .requestPictureInPicture()
+                    .catch(
+                        ()=>{
+                            toast(
+                                "PiP não disponível."
+                            );
+                        }
+                    );
+
+            }
+
+        }
+
+    }
+
+    if(
+        action==="fullscreen"
+    ){
+
+        enterCinemaMode();
+
+    }
+
+}
+
+
+/* =========================================================
+   VELOCIDADE
+   ========================================================= */
+
+document.addEventListener(
+    "change",
+    event=>{
+
+        if(
+            event.target.id ===
+            "videoSpeed"
+        ){
+
+            const video =
+                document.getElementById(
+                    "mainVideo"
+                );
+
+            if(video){
+
+                video.playbackRate =
+                    Number(
+                        event.target.value
+                    );
+
+            }
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   BUSCA
+   ========================================================= */
+
+document.getElementById(
+    "searchInput"
+).addEventListener(
+    "input",
+    event=>{
+        search(
+            event.target.value
+        );
+    }
+);
+
+
+/* =========================================================
+   BOTÕES
+   ========================================================= */
+
+document.getElementById(
+    "adminOpen"
+).onclick =
+    showAdmin;
+
+document.getElementById(
+    "heroAdmin"
+).onclick =
+    showAdmin;
+
+document.getElementById(
+    "heroPlay"
+).onclick =
+    ()=>{
+        showTab(
+            "movies"
+        );
+    };
+
+
+/* =========================================================
+   FECHAR PLAYER
+   ========================================================= */
+
+document.getElementById(
+    "playerModal"
+).addEventListener(
+    "click",
+    event=>{
+
+        if(
+            event.target.id ===
+            "playerModal"
+        ){
+
+            closeModal(
+                "playerModal"
+            );
+
+            exitCinemaMode();
+
+            document.body
+                .classList.remove(
+                    "player-open"
+                );
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   ESC
+   ========================================================= */
+
+document.addEventListener(
+    "keydown",
+    event=>{
+
+        if(
+            event.key==="Escape"
+        ){
+
+            document
+                .querySelectorAll(
+                    ".modal.show"
+                )
+                .forEach(
+                    modal=>{
+                        modal.classList.remove(
+                            "show"
+                        );
+                    }
+                );
+
+            exitCinemaMode();
+
+            document.body
+                .classList.remove(
+                    "player-open"
+                );
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   FULLSCREEN CHANGE
+   ========================================================= */
+
+document.addEventListener(
+    "fullscreenchange",
+    ()=>{
+
+        if(
+            !document.fullscreenElement
+        ){
+
+            try{
+
+                if(
+                    screen.orientation &&
+                    screen.orientation.unlock
+                ){
+
+                    screen.orientation.unlock();
+
+                }
+
+            }catch{}
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   RENDER INICIAL
+   ========================================================= */
+
+function render(){
+
+    applyTheme();
+
+    renderNavigation();
+
+    /*
+        Garante que o conteúdo antigo
+        também receba uma aba.
+    */
+
+    normalizeState(
+        STATE
+    );
+
+    saveLocalState();
+
+    showTab(
+        currentPage
+    );
+
+}
+
+
+/* =========================================================
+   START
+   ========================================================= */
+
+render();
+bootstrapCloud();
+
+</script>
+
+</body>
+</html>
